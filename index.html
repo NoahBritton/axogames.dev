@@ -10,7 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     :root {
       --bg: #050508;
@@ -25,7 +29,9 @@
       --accent-3: #4dccff;
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: 'Outfit', system-ui, sans-serif;
@@ -37,13 +43,17 @@
     /* ── Fluid Canvas (full background) ── */
     canvas.fluid {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 0;
     }
 
     /* ── Hide dat.gui panel ── */
-    .dg { display: none !important; }
+    .dg {
+      display: none !important;
+    }
 
     /* ── Content Layer ── */
     .content {
@@ -118,8 +128,10 @@
     /* Glow layers behind logo */
     .logo-glow {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: 1;
       pointer-events: none;
     }
@@ -128,7 +140,8 @@
     .logo-glow::after {
       content: 'axogames';
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       font-size: clamp(4rem, 12vw, 9rem);
       font-weight: 900;
       letter-spacing: -0.04em;
@@ -151,8 +164,15 @@
     }
 
     @keyframes glow-pulse {
-      from { opacity: 0.2; transform: scale(1); }
-      to { opacity: 0.5; transform: scale(1.02); }
+      from {
+        opacity: 0.2;
+        transform: scale(1);
+      }
+
+      to {
+        opacity: 0.5;
+        transform: scale(1.02);
+      }
     }
 
     .tagline {
@@ -204,10 +224,27 @@
     }
 
     @keyframes scroll-drop {
-      0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
-      50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-      50.01% { transform-origin: bottom; }
-      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0.3; }
+      0% {
+        transform: scaleY(0);
+        transform-origin: top;
+        opacity: 1;
+      }
+
+      50% {
+        transform: scaleY(1);
+        transform-origin: top;
+        opacity: 1;
+      }
+
+      50.01% {
+        transform-origin: bottom;
+      }
+
+      100% {
+        transform: scaleY(0);
+        transform-origin: bottom;
+        opacity: 0.3;
+      }
     }
 
     /* ── Sections ── */
@@ -270,8 +307,8 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                  box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                  border-color 0.4s;
+        box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.4s;
     }
 
     .game-card::before {
@@ -286,7 +323,9 @@
     .game-card::after {
       content: '';
       position: absolute;
-      top: -1px; left: -1px; right: -1px;
+      top: -1px;
+      left: -1px;
+      right: -1px;
       height: 2px;
       background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent);
       opacity: 0;
@@ -300,7 +339,9 @@
     }
 
     .game-card:hover::before,
-    .game-card:hover::after { opacity: 1; }
+    .game-card:hover::after {
+      opacity: 1;
+    }
 
     .card-header {
       display: flex;
@@ -373,8 +414,15 @@
     }
 
     @keyframes badge-blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
     }
 
     .badge-soon {
@@ -409,7 +457,9 @@
     .about-card::after {
       content: '';
       position: absolute;
-      top: -1px; left: -1px; right: -1px;
+      top: -1px;
+      left: -1px;
+      right: -1px;
       height: 2px;
       background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
     }
@@ -420,7 +470,7 @@
       font-size: 0.95rem;
     }
 
-    .about-card p + p {
+    .about-card p+p {
       margin-top: 0.75rem;
     }
 
@@ -464,7 +514,9 @@
       text-shadow: 0 0 20px rgba(196, 77, 255, 0.5);
     }
 
-    .social-link:hover::after { width: 100%; }
+    .social-link:hover::after {
+      width: 100%;
+    }
 
     .copyright {
       color: var(--muted);
@@ -475,231 +527,250 @@
 
     /* ── Responsive ── */
     @media (max-width: 640px) {
-      .cards-grid { grid-template-columns: 1fr; padding: 0 0.5rem; }
-      .status-section, .about-section { padding: 5rem 1.5rem; }
-      .about-card { padding: 2rem; }
-      .social-links { gap: 1.5rem; }
+      .cards-grid {
+        grid-template-columns: 1fr;
+        padding: 0 0.5rem;
+      }
+
+      .status-section,
+      .about-section {
+        padding: 5rem 1.5rem;
+      }
+
+      .about-card {
+        padding: 2rem;
+      }
+
+      .social-links {
+        gap: 1.5rem;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<!-- Fluid Simulation Canvas -->
-<canvas class="fluid"></canvas>
+  <!-- Fluid Simulation Canvas -->
+  <canvas class="fluid"></canvas>
 
-<!-- Content -->
-<div class="content">
+  <!-- Content -->
+  <div class="content">
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-content">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
 
-      <!-- Minimalist axolotl watermark behind logo -->
-      <div class="axo-watermark">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="rgba(196,77,255,0.07)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <!-- Head outline -->
-          <ellipse cx="100" cy="100" rx="40" ry="36"/>
-          <!-- Gills left -->
-          <line x1="62" y1="72" x2="34" y2="46"/>
-          <line x1="60" y1="82" x2="28" y2="68"/>
-          <line x1="60" y1="92" x2="30" y2="94"/>
-          <!-- Gill tips left -->
-          <circle cx="34" cy="46" r="3.5" fill="rgba(196,77,255,0.04)" stroke="rgba(196,77,255,0.07)"/>
-          <circle cx="28" cy="68" r="3.5" fill="rgba(255,107,157,0.04)" stroke="rgba(255,107,157,0.07)"/>
-          <circle cx="30" cy="94" r="3.5" fill="rgba(77,204,255,0.04)" stroke="rgba(77,204,255,0.07)"/>
-          <!-- Gills right -->
-          <line x1="138" y1="72" x2="166" y2="46"/>
-          <line x1="140" y1="82" x2="172" y2="68"/>
-          <line x1="140" y1="92" x2="170" y2="94"/>
-          <!-- Gill tips right -->
-          <circle cx="166" cy="46" r="3.5" fill="rgba(196,77,255,0.04)" stroke="rgba(196,77,255,0.07)"/>
-          <circle cx="172" cy="68" r="3.5" fill="rgba(255,107,157,0.04)" stroke="rgba(255,107,157,0.07)"/>
-          <circle cx="170" cy="94" r="3.5" fill="rgba(77,204,255,0.04)" stroke="rgba(77,204,255,0.07)"/>
-        </svg>
-      </div>
-
-      <div class="logo-wrap">
-        <div class="logo-glow"></div>
-        <h1 class="logo">
-          <span class="axo">axo</span><span class="games">games</span>
-        </h1>
-      </div>
-
-      <p class="tagline">indie games or something</p>
-      <p class="sub-tagline">maybe</p>
-    </div>
-
-    <div class="scroll-hint" id="scrollHint">
-      <span>scroll</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- Projects -->
-  <section class="status-section" id="games">
-    <span class="section-label gs-reveal">Projects</span>
-    <h2 class="section-title gs-reveal">What's Cooking</h2>
-    <p class="section-subtitle gs-reveal">Current projects and experiments from the lab.</p>
-
-    <div class="cards-grid">
-      <div class="game-card gs-reveal">
-        <div class="card-header">
-          <div class="card-icon card-icon-dev">&#x2694;&#xFE0F;</div>
-          <h3>Bullet Heaven</h3>
+        <!-- Minimalist axolotl watermark behind logo -->
+        <div class="axo-watermark">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="rgba(196,77,255,0.18)"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Head outline -->
+            <ellipse cx="100" cy="100" rx="40" ry="36" />
+            <!-- Gills left -->
+            <line x1="62" y1="72" x2="34" y2="46" />
+            <line x1="60" y1="82" x2="28" y2="68" />
+            <line x1="60" y1="92" x2="30" y2="94" />
+            <!-- Gill tips left -->
+            <circle cx="34" cy="46" r="3.5" fill="rgba(196,77,255,0.1)" stroke="rgba(196,77,255,0.2)" />
+            <circle cx="28" cy="68" r="3.5" fill="rgba(255,107,157,0.1)" stroke="rgba(255,107,157,0.2)" />
+            <circle cx="30" cy="94" r="3.5" fill="rgba(77,204,255,0.1)" stroke="rgba(77,204,255,0.2)" />
+            <!-- Gills right -->
+            <line x1="138" y1="72" x2="166" y2="46" />
+            <line x1="140" y1="82" x2="172" y2="68" />
+            <line x1="140" y1="92" x2="170" y2="94" />
+            <!-- Gill tips right -->
+            <circle cx="166" cy="46" r="3.5" fill="rgba(196,77,255,0.1)" stroke="rgba(196,77,255,0.2)" />
+            <circle cx="172" cy="68" r="3.5" fill="rgba(255,107,157,0.1)" stroke="rgba(255,107,157,0.2)" />
+            <circle cx="170" cy="94" r="3.5" fill="rgba(77,204,255,0.1)" stroke="rgba(77,204,255,0.2)" />
+          </svg>
         </div>
-        <p>A vampire-survivors-style bullet heaven with 6 weapon archetypes, evolution system, and endless escalation. Survive the horde.</p>
-        <span class="badge badge-dev">In Development</span>
-      </div>
 
-      <div class="game-card gs-reveal">
-        <div class="card-header">
-          <div class="card-icon card-icon-soon">&#x2753;</div>
-          <h3>???</h3>
+        <div class="logo-wrap">
+          <div class="logo-glow"></div>
+          <h1 class="logo">
+            <span class="axo">axo</span><span class="games">games</span>
+          </h1>
         </div>
-        <p>Something else is brewing. Experimental. Probably involving too many particles. Stay tuned.</p>
-        <span class="badge badge-soon">Coming Eventually</span>
+
+        <p class="tagline">indie games or something</p>
+        <p class="sub-tagline">maybe</p>
       </div>
-    </div>
-  </section>
 
-  <div class="section-divider"></div>
+      <div class="scroll-hint" id="scrollHint">
+        <span>scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
 
-  <!-- About -->
-  <section class="about-section" id="about">
-    <span class="section-label gs-reveal">Studio</span>
-    <h2 class="section-title gs-reveal">About</h2>
-    <div class="about-card gs-reveal">
-      <p>Solo indie dev making games, breaking things, and occasionally shipping something. Powered by caffeine and questionable ideas.</p>
-      <p>Built with Godot. Vibes optional but encouraged.</p>
-    </div>
-  </section>
+    <div class="section-divider"></div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="social-links">
-      <a class="social-link" href="https://github.com/NoahBritton" target="_blank" rel="noopener">GitHub</a>
-      <a class="social-link" href="https://store.steampowered.com/" target="_blank" rel="noopener">Steam</a>
-    </div>
-    <p class="copyright">&copy; 2026 axogames.dev</p>
-  </footer>
+    <!-- Projects -->
+    <section class="status-section" id="games">
+      <span class="section-label gs-reveal">Projects</span>
+      <h2 class="section-title gs-reveal">What's Cooking</h2>
+      <p class="section-subtitle gs-reveal">Current projects and experiments from the lab.</p>
 
-</div>
+      <div class="cards-grid">
+        <div class="game-card gs-reveal">
+          <div class="card-header">
+            <div class="card-icon card-icon-dev">&#x2694;&#xFE0F;</div>
+            <h3>Bullet Heaven</h3>
+          </div>
+          <p>A vampire-survivors-style bullet heaven with 6 weapon archetypes, evolution system, and endless escalation.
+            Survive the horde.</p>
+          <span class="badge badge-dev">In Development</span>
+        </div>
 
-<!-- Stub Google Analytics to prevent errors from fluid script -->
-<script>window.ga=function(){};</script>
-<!-- dat.gui (required by fluid sim, hidden via CSS) -->
-<script src="https://cdn.jsdelivr.net/gh/PavelDoGreat/WebGL-Fluid-Simulation@master/dat.gui.min.js"></script>
-<!-- WebGL Fluid Simulation -->
-<script src="https://cdn.jsdelivr.net/gh/PavelDoGreat/WebGL-Fluid-Simulation@master/script.js"></script>
-<!-- GSAP -->
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+        <div class="game-card gs-reveal">
+          <div class="card-header">
+            <div class="card-icon card-icon-soon">&#x2753;</div>
+            <h3>???</h3>
+          </div>
+          <p>Something else is brewing. Experimental. Probably involving too many particles. Stay tuned.</p>
+          <span class="badge badge-soon">Coming Eventually</span>
+        </div>
+      </div>
+    </section>
 
-<script>
-  // ── Customize fluid sim colors ──
-  // The fluid sim script exposes `config` globally.
-  // Override after a tick to ensure script.js has run.
-  requestAnimationFrame(() => {
-    if (typeof config !== 'undefined') {
-      config.BLOOM = true;
-      config.BLOOM_INTENSITY = 0.6;
-      config.BLOOM_THRESHOLD = 0.5;
-      config.SUNRAYS = true;
-      config.SUNRAYS_WEIGHT = 0.8;
-      config.DENSITY_DISSIPATION = 0.97;
-      config.VELOCITY_DISSIPATION = 0.98;
-      config.PRESSURE = 0.75;
-      config.CURL = 20;
-      config.SPLAT_RADIUS = 0.3;
-      config.SPLAT_FORCE = 4000;
-      config.BACK_COLOR = { r: 5, g: 5, b: 8 };
-      config.COLORFUL = true;
-      config.COLOR_UPDATE_SPEED = 6;
-    }
-  });
+    <div class="section-divider"></div>
 
-  // ── GSAP Animations ──
-  gsap.registerPlugin(ScrollTrigger);
+    <!-- About -->
+    <section class="about-section" id="about">
+      <span class="section-label gs-reveal">Studio</span>
+      <h2 class="section-title gs-reveal">About</h2>
+      <div class="about-card gs-reveal">
+        <p>Solo indie dev making random crap in various engines and trying desperately to not use javascript.</p>
+      </div>
+    </section>
 
-  // Hero entrance timeline
-  const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-  tl
-    .to(".axo-watermark", { opacity: 0.8, duration: 2, ease: "power1.inOut" }, 0)
-    .to(".logo", { opacity: 1, duration: 1 }, 0.3)
-    .from(".logo", { y: 40, scale: 0.95, duration: 1.2, ease: "power4.out" }, 0.3)
-    .to(".tagline", { opacity: 1, duration: 0.7 }, 0.9)
-    .from(".tagline", { y: 15, duration: 0.7 }, "<")
-    .to(".sub-tagline", { opacity: 0.5, duration: 0.6 }, 1.1)
-    .from(".sub-tagline", { y: 10, duration: 0.6 }, "<")
-    .to("#scrollHint", { opacity: 0.6, duration: 1 }, 2);
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="social-links">
+        <a class="social-link" href="https://github.com/NoahBritton" target="_blank" rel="noopener">GitHub</a>
+        <a class="social-link" href="https://store.steampowered.com/" target="_blank" rel="noopener">Steam</a>
+      </div>
+      <p class="copyright">&copy; 2026 axogames.dev</p>
+    </footer>
 
-  // Scroll: fade out hero elements
-  gsap.to(".hero-content", {
-    scrollTrigger: {
-      trigger: ".hero",
-      start: "top top",
-      end: "60% top",
-      scrub: true
-    },
-    y: -60,
-    opacity: 0,
-    scale: 0.97
-  });
+  </div>
 
-  gsap.to("#scrollHint", {
-    scrollTrigger: {
-      trigger: ".hero",
-      start: "10% top",
-      end: "30% top",
-      scrub: true
-    },
-    opacity: 0
-  });
+  <!-- Hidden DOM stubs required by fluid sim script -->
+  <div class="promo" style="display:none"><button class="promo-close"></button></div>
+  <a id="apple_link" style="display:none"></a>
+  <a id="google_link" style="display:none"></a>
 
-  // Reveal sections on scroll
-  document.querySelectorAll(".gs-reveal").forEach((el) => {
-    gsap.from(el, {
+  <!-- Stub Google Analytics to prevent errors from fluid script -->
+  <script>window.ga = function () { };</script>
+  <!-- dat.gui (required by fluid sim, hidden via CSS) -->
+  <script src="https://cdn.jsdelivr.net/gh/PavelDoGreat/WebGL-Fluid-Simulation@master/dat.gui.min.js"></script>
+  <!-- WebGL Fluid Simulation -->
+  <script src="https://cdn.jsdelivr.net/gh/PavelDoGreat/WebGL-Fluid-Simulation@master/script.js"></script>
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+
+  <script>
+    // ── Customize fluid sim colors ──
+    // The fluid sim script exposes `config` globally.
+    // Override after a tick to ensure script.js has run.
+    requestAnimationFrame(() => {
+      if (typeof config !== 'undefined') {
+        config.BLOOM = true;
+        config.BLOOM_INTENSITY = 0.6;
+        config.BLOOM_THRESHOLD = 0.5;
+        config.SUNRAYS = true;
+        config.SUNRAYS_WEIGHT = 0.8;
+        config.DENSITY_DISSIPATION = 0.97;
+        config.VELOCITY_DISSIPATION = 0.98;
+        config.PRESSURE = 0.75;
+        config.CURL = 20;
+        config.SPLAT_RADIUS = 0.3;
+        config.SPLAT_FORCE = 4000;
+        config.BACK_COLOR = { r: 5, g: 5, b: 8 };
+        config.COLORFUL = true;
+        config.COLOR_UPDATE_SPEED = 6;
+      }
+    });
+
+    // ── GSAP Animations ──
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero entrance timeline
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    tl
+      .to(".axo-watermark", { opacity: 0.8, duration: 2, ease: "power1.inOut" }, 0)
+      .to(".logo", { opacity: 1, duration: 1 }, 0.3)
+      .from(".logo", { y: 40, scale: 0.95, duration: 1.2, ease: "power4.out" }, 0.3)
+      .to(".tagline", { opacity: 1, duration: 0.7 }, 0.9)
+      .from(".tagline", { y: 15, duration: 0.7 }, "<")
+      .to(".sub-tagline", { opacity: 0.5, duration: 0.6 }, 1.1)
+      .from(".sub-tagline", { y: 10, duration: 0.6 }, "<")
+      .to("#scrollHint", { opacity: 0.6, duration: 1 }, 2);
+
+    // Scroll: fade out hero elements
+    gsap.to(".hero-content", {
       scrollTrigger: {
-        trigger: el,
-        start: "top 88%",
-        toggleActions: "play none none none"
+        trigger: ".hero",
+        start: "top top",
+        end: "60% top",
+        scrub: true
       },
-      y: 35,
+      y: -60,
       opacity: 0,
-      duration: 0.9,
+      scale: 0.97
+    });
+
+    gsap.to("#scrollHint", {
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "10% top",
+        end: "30% top",
+        scrub: true
+      },
+      opacity: 0
+    });
+
+    // Reveal sections on scroll
+    document.querySelectorAll(".gs-reveal").forEach((el) => {
+      gsap.from(el, {
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          toggleActions: "play none none none"
+        },
+        y: 35,
+        opacity: 0,
+        duration: 0.9,
+        ease: "power2.out"
+      });
+    });
+
+    // Stagger cards
+    gsap.from(".game-card", {
+      scrollTrigger: {
+        trigger: ".cards-grid",
+        start: "top 82%"
+      },
+      y: 50,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.2,
       ease: "power2.out"
     });
-  });
 
-  // Stagger cards
-  gsap.from(".game-card", {
-    scrollTrigger: {
-      trigger: ".cards-grid",
-      start: "top 82%"
-    },
-    y: 50,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.2,
-    ease: "power2.out"
-  });
-
-  // ── Card Tilt ──
-  document.querySelectorAll('.game-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      card.style.transform = `translateY(-6px) scale(1.01) perspective(600px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg)`;
+    // ── Card Tilt ──
+    document.querySelectorAll('.game-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `translateY(-6px) scale(1.01) perspective(600px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-    });
-  });
-</script>
+  </script>
 </body>
 
 </html>
