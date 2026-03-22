@@ -703,55 +703,46 @@
       }
     });
 
-    // ── Ambient fluid movement via periodic gentle splats ──
+    // ── Continuous ambient fluid flow ──
     (function () {
+      let prevX = 0.5, prevY = 0.5;
       let time = Math.random() * 100;
+      let frame = 0;
 
       function ambientFlow() {
-        time += 0.003;
+        time += 0.004;
+        frame++;
 
-        // Lissajous curve for smooth, organic path
+        // Lissajous curve for smooth, organic movement
         const x = 0.5 + Math.sin(time * 0.7) * 0.35 + Math.sin(time * 1.3) * 0.12;
         const y = 0.5 + Math.cos(time * 0.5) * 0.3 + Math.cos(time * 1.1) * 0.12;
 
-        if (typeof splat === 'function') {
-          // Gentle directional push along the curve's tangent
-          const dx = Math.cos(time * 0.7) * 0.7 * 0.35 + Math.cos(time * 1.3) * 1.3 * 0.12;
-          const dy = -(- Math.sin(time * 0.5) * 0.5 * 0.3 - Math.sin(time * 1.1) * 1.1 * 0.12);
+        // Only splat every 3rd frame to avoid over-saturation
+        if (typeof splat === 'function' && frame % 3 === 0) {
+          const dx = (x - prevX) * 600;
+          const dy = (y - prevY) * -600;
 
-          const origRadius = config.SPLAT_RADIUS;
-          config.SPLAT_RADIUS = 0.15;
+          if (Math.abs(dx) + Math.abs(dy) > 0.05) {
+            const origRadius = config.SPLAT_RADIUS;
+            config.SPLAT_RADIUS = 0.12;
 
-          const color = generateColor();
-          // Very faint — just enough to see soft wisps
-          color.r *= 2.5;
-          color.g *= 2.5;
-          color.b *= 2.5;
-          splat(x, y, dx * 150, dy * 150, color);
+            const color = generateColor();
+            // Very faint wisps
+            color.r *= 0.3;
+            color.g *= 0.3;
+            color.b *= 0.3;
+            splat(x, y, dx, dy, color);
 
-          config.SPLAT_RADIUS = origRadius;
-        }
-      }
-
-      // Splat periodically — every ~3 seconds with slight randomness
-      function scheduleNext() {
-        const delay = 2500 + Math.random() * 1500;
-        setTimeout(function () {
-          ambientFlow();
-          // Sometimes do 2-3 splats in quick succession for variety
-          const extra = Math.floor(Math.random() * 3);
-          for (let i = 0; i < extra; i++) {
-            setTimeout(function () {
-              time += 0.02;
-              ambientFlow();
-            }, (i + 1) * 200);
+            config.SPLAT_RADIUS = origRadius;
           }
-          scheduleNext();
-        }, delay);
+        }
+
+        prevX = x;
+        prevY = y;
+        requestAnimationFrame(ambientFlow);
       }
 
-      // Wait for initial burst to clear, then start ambient
-      setTimeout(scheduleNext, 800);
+      setTimeout(ambientFlow, 800);
     })();
 
     // ── GSAP Animations ──
