@@ -80,24 +80,6 @@
       align-items: center;
     }
 
-    /* ── Minimalist Axolotl Watermark Icon ── */
-    .axo-watermark {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -55%);
-      width: clamp(280px, 40vw, 500px);
-      height: clamp(280px, 40vw, 500px);
-      opacity: 0;
-      pointer-events: none;
-      filter: blur(1px);
-    }
-
-    .axo-watermark svg {
-      width: 100%;
-      height: 100%;
-    }
-
     /* ── Logo ── */
     .logo-wrap {
       position: relative;
@@ -560,31 +542,6 @@
     <section class="hero">
       <div class="hero-content">
 
-        <!-- Minimalist axolotl watermark behind logo -->
-        <div class="axo-watermark">
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="rgba(196,77,255,0.18)"
-            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <!-- Head outline -->
-            <ellipse cx="100" cy="100" rx="40" ry="36" />
-            <!-- Gills left -->
-            <line x1="62" y1="72" x2="34" y2="46" />
-            <line x1="60" y1="82" x2="28" y2="68" />
-            <line x1="60" y1="92" x2="30" y2="94" />
-            <!-- Gill tips left -->
-            <circle cx="34" cy="46" r="3.5" fill="rgba(196,77,255,0.1)" stroke="rgba(196,77,255,0.2)" />
-            <circle cx="28" cy="68" r="3.5" fill="rgba(255,107,157,0.1)" stroke="rgba(255,107,157,0.2)" />
-            <circle cx="30" cy="94" r="3.5" fill="rgba(77,204,255,0.1)" stroke="rgba(77,204,255,0.2)" />
-            <!-- Gills right -->
-            <line x1="138" y1="72" x2="166" y2="46" />
-            <line x1="140" y1="82" x2="172" y2="68" />
-            <line x1="140" y1="92" x2="170" y2="94" />
-            <!-- Gill tips right -->
-            <circle cx="166" cy="46" r="3.5" fill="rgba(196,77,255,0.1)" stroke="rgba(196,77,255,0.2)" />
-            <circle cx="172" cy="68" r="3.5" fill="rgba(255,107,157,0.1)" stroke="rgba(255,107,157,0.2)" />
-            <circle cx="170" cy="94" r="3.5" fill="rgba(77,204,255,0.1)" stroke="rgba(77,204,255,0.2)" />
-          </svg>
-        </div>
-
         <div class="logo-wrap">
           <div class="logo-glow"></div>
           <h1 class="logo">
@@ -645,10 +602,6 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <div class="social-links">
-        <a class="social-link" href="https://github.com/NoahBritton" target="_blank" rel="noopener">GitHub</a>
-        <a class="social-link" href="https://store.steampowered.com/" target="_blank" rel="noopener">Steam</a>
-      </div>
       <p class="copyright">&copy; 2026 axogames.dev</p>
     </footer>
 
@@ -663,8 +616,8 @@
   <script>window.ga = function () { };</script>
   <!-- dat.gui (required by fluid sim, hidden via CSS) -->
   <script src="https://cdn.jsdelivr.net/gh/PavelDoGreat/WebGL-Fluid-Simulation@master/dat.gui.min.js"></script>
-  <!-- WebGL Fluid Simulation -->
-  <script src="https://cdn.jsdelivr.net/gh/PavelDoGreat/WebGL-Fluid-Simulation@master/script.js"></script>
+  <!-- WebGL Fluid Simulation (local, modified with axolotl obstacle) -->
+  <script src="fluid.js"></script>
   <!-- GSAP -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
@@ -698,7 +651,6 @@
     // Hero entrance timeline
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
     tl
-      .to(".axo-watermark", { opacity: 0.8, duration: 2, ease: "power1.inOut" }, 0)
       .to(".logo", { opacity: 1, duration: 1 }, 0.3)
       .from(".logo", { y: 40, scale: 0.95, duration: 1.2, ease: "power4.out" }, 0.3)
       .to(".tagline", { opacity: 1, duration: 0.7 }, 0.9)
