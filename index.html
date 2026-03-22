@@ -59,6 +59,14 @@
     .content {
       position: relative;
       z-index: 1;
+      pointer-events: none;
+    }
+
+    .content a,
+    .content button,
+    .content .game-card,
+    .content .about-card {
+      pointer-events: auto;
     }
 
     /* ── Hero ── */
@@ -78,6 +86,26 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+
+    /* ── Axo Logo Watermark ── */
+    .axo-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      width: clamp(280px, 40vw, 500px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .axo-watermark img {
+      width: 100%;
+      height: auto;
+      /* Make the logo match the background color so it's invisible until fluid reveals it */
+      filter: brightness(0);
+      /* Feather the edges with a radial mask */
     }
 
     /* ── Logo ── */
@@ -542,6 +570,11 @@
     <section class="hero">
       <div class="hero-content">
 
+        <!-- Axolotl logo watermark behind logo -->
+        <div class="axo-watermark">
+          <img src="axologo.png" alt="" />
+        </div>
+
         <div class="logo-wrap">
           <div class="logo-glow"></div>
           <h1 class="logo">
@@ -602,6 +635,10 @@
 
     <!-- Footer -->
     <footer class="footer">
+      <div class="social-links">
+        <a class="social-link" href="https://github.com/NoahBritton" target="_blank" rel="noopener">GitHub</a>
+        <a class="social-link" href="https://store.steampowered.com/" target="_blank" rel="noopener">Steam</a>
+      </div>
       <p class="copyright">&copy; 2026 axogames.dev</p>
     </footer>
 
@@ -616,8 +653,29 @@
   <script>window.ga = function () { };</script>
   <!-- dat.gui (required by fluid sim, hidden via CSS) -->
   <script src="https://cdn.jsdelivr.net/gh/PavelDoGreat/WebGL-Fluid-Simulation@master/dat.gui.min.js"></script>
-  <!-- WebGL Fluid Simulation (local, modified with axolotl obstacle) -->
-  <script src="fluid.js"></script>
+  <!-- WebGL Fluid Simulation -->
+  <script src="https://cdn.jsdelivr.net/gh/PavelDoGreat/WebGL-Fluid-Simulation@master/script.js"></script>
+  <script>
+    // Override generateColor to only produce pink/magenta tones
+    // The function is top-level in script.js so we can reassign it
+    generateColor = function () {
+      // Hue range 310-350 (pink/magenta), with slight variation
+      let hue = (310 + Math.random() * 40) / 360;
+      let c = HSVtoRGB(hue, 0.8 + Math.random() * 0.2, 0.8 + Math.random() * 0.2);
+      c.r *= 0.15;
+      c.g *= 0.15;
+      c.b *= 0.15;
+      return c;
+    };
+    // Kill initial color burst by making it dissipate instantly, then restore
+    config.DENSITY_DISSIPATION = 0;
+    config.VELOCITY_DISSIPATION = 0;
+    // Also clear any existing dye by forcing a few blank frames
+    setTimeout(function () {
+      config.DENSITY_DISSIPATION = 0.97;
+      config.VELOCITY_DISSIPATION = 0.98;
+    }, 400);
+  </script>
   <!-- GSAP -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
@@ -628,22 +686,73 @@
     // Override after a tick to ensure script.js has run.
     requestAnimationFrame(() => {
       if (typeof config !== 'undefined') {
-        config.BLOOM = true;
-        config.BLOOM_INTENSITY = 0.6;
-        config.BLOOM_THRESHOLD = 0.5;
-        config.SUNRAYS = true;
-        config.SUNRAYS_WEIGHT = 0.8;
+        config.BLOOM = false;
+        config.SUNRAYS = false;
         config.DENSITY_DISSIPATION = 0.97;
         config.VELOCITY_DISSIPATION = 0.98;
-        config.PRESSURE = 0.75;
-        config.CURL = 20;
+        config.PRESSURE = 0.25;
+        config.CURL = 3;
         config.SPLAT_RADIUS = 0.3;
         config.SPLAT_FORCE = 4000;
         config.BACK_COLOR = { r: 5, g: 5, b: 8 };
-        config.COLORFUL = true;
-        config.COLOR_UPDATE_SPEED = 6;
+        config.COLORFUL = false;
+      }
+      // Lock fluid splat colors to pink/magenta palette
+      if (typeof pointers !== 'undefined') {
+        pointers.forEach(p => { p.color = { r: 0.15, g: 0.02, b: 0.06 }; });
       }
     });
+
+    // ── Ambient fluid movement via periodic gentle splats ──
+    (function () {
+      let time = Math.random() * 100;
+
+      function ambientFlow() {
+        time += 0.003;
+
+        // Lissajous curve for smooth, organic path
+        const x = 0.5 + Math.sin(time * 0.7) * 0.35 + Math.sin(time * 1.3) * 0.12;
+        const y = 0.5 + Math.cos(time * 0.5) * 0.3 + Math.cos(time * 1.1) * 0.12;
+
+        if (typeof splat === 'function') {
+          // Gentle directional push along the curve's tangent
+          const dx = Math.cos(time * 0.7) * 0.7 * 0.35 + Math.cos(time * 1.3) * 1.3 * 0.12;
+          const dy = -(- Math.sin(time * 0.5) * 0.5 * 0.3 - Math.sin(time * 1.1) * 1.1 * 0.12);
+
+          const origRadius = config.SPLAT_RADIUS;
+          config.SPLAT_RADIUS = 0.15;
+
+          const color = generateColor();
+          // Very faint — just enough to see soft wisps
+          color.r *= 2.5;
+          color.g *= 2.5;
+          color.b *= 2.5;
+          splat(x, y, dx * 150, dy * 150, color);
+
+          config.SPLAT_RADIUS = origRadius;
+        }
+      }
+
+      // Splat periodically — every ~3 seconds with slight randomness
+      function scheduleNext() {
+        const delay = 2500 + Math.random() * 1500;
+        setTimeout(function () {
+          ambientFlow();
+          // Sometimes do 2-3 splats in quick succession for variety
+          const extra = Math.floor(Math.random() * 3);
+          for (let i = 0; i < extra; i++) {
+            setTimeout(function () {
+              time += 0.02;
+              ambientFlow();
+            }, (i + 1) * 200);
+          }
+          scheduleNext();
+        }, delay);
+      }
+
+      // Wait for initial burst to clear, then start ambient
+      setTimeout(scheduleNext, 800);
+    })();
 
     // ── GSAP Animations ──
     gsap.registerPlugin(ScrollTrigger);
@@ -651,6 +760,7 @@
     // Hero entrance timeline
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
     tl
+      .to(".axo-watermark", { opacity: 1, duration: 2, ease: "power1.inOut" }, 0)
       .to(".logo", { opacity: 1, duration: 1 }, 0.3)
       .from(".logo", { y: 40, scale: 0.95, duration: 1.2, ease: "power4.out" }, 0.3)
       .to(".tagline", { opacity: 1, duration: 0.7 }, 0.9)
