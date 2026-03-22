@@ -1171,6 +1171,8 @@ multipleSplats(parseInt(Math.random() * 20) + 5);
 
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
+let _axoPoints = null;
+let _axoLastAmbient = 0;
 update();
 
 function update () {
@@ -1235,8 +1237,6 @@ function applyInputs () {
 // Points are in normalized [0,1] coords (Y=0 bottom, Y=1 top)
 // The shape is centered at (0.5, 0.55) to sit behind the logo
 
-let _axoPoints = null;
-let _axoLastAmbient = 0;
 
 function getAxoPoints () {
     if (_axoPoints) return _axoPoints;
@@ -1317,25 +1317,6 @@ function axoObstacle (time) {
     }
 
     config.SPLAT_RADIUS = origRadius;
-
-    // ── Ambient flow: periodic splats to keep fluid moving ──
-    if (time - _axoLastAmbient > 2.5) {
-        _axoLastAmbient = time;
-        const count = 2 + Math.floor(Math.random() * 3);
-        for (let i = 0; i < count; i++) {
-            const color = generateColor();
-            color.r *= 10.0;
-            color.g *= 10.0;
-            color.b *= 10.0;
-            const x = Math.random();
-            const y = Math.random();
-            // Gentle directional flow
-            const angle = time * 0.3 + Math.random() * Math.PI;
-            const dx = Math.cos(angle) * 600;
-            const dy = Math.sin(angle) * 600;
-            splat(x, y, dx, dy, color);
-        }
-    }
 }
 
 function step (dt) {
