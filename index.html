@@ -120,6 +120,9 @@
     .reveal-card.revealed {
       opacity: 1;
       transform: translateY(0);
+      /* After reveal, switch to the normal hover transition so card tilt works instantly */
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.4s;
     }
 
     .reveal-card:nth-child(2) {
@@ -378,6 +381,8 @@
       padding: 0;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 0 20px rgba(196, 77, 255, 0.06), inset 0 0 20px rgba(196, 77, 255, 0.03);
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
         box-shadow 0.4s;
@@ -405,13 +410,13 @@
       position: relative;
       z-index: 1;
       padding: 1.75rem 1.5rem 1.5rem;
+      flex: 1;
       background: linear-gradient(180deg, rgba(16, 8, 28, 0.7) 0%, rgba(8, 4, 16, 0.8) 100%);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
     }
 
     .game-card:hover {
-      transform: translateY(-4px);
       box-shadow: 0 8px 40px rgba(196, 77, 255, 0.15), 0 0 0 1px rgba(196, 77, 255, 0.2), inset 0 0 30px rgba(196, 77, 255, 0.05);
     }
 
@@ -704,7 +709,7 @@
           <div class="card-inner">
             <div class="card-header">
               <div class="card-icon card-icon-dev">&#x2694;&#xFE0F;</div>
-              <h3>Bullet Heaven</h3>
+              <h3>Mortar and Pistol</h3>
             </div>
             <p>Vampire-survivors-style bullet heaven. 6 weapon archetypes, evolution system, pixel VFX, endless
               escalation. Survive the horde.</p>
@@ -725,12 +730,11 @@
               <div class="card-icon card-icon-soon">&#x2753;</div>
               <h3>???</h3>
             </div>
-            <p>Something else is brewing. Experimental. Probably involving too many particles and not enough planning.
-            </p>
+            <p>Numbers go up. Prestige resets everything. You click anyway. An incremental game about exponential growth and questionable life choices.</p>
             <div class="card-tags">
-              <span class="card-tag card-tag-muted">TBD</span>
-              <span class="card-tag card-tag-muted">Particles</span>
-              <span class="card-tag card-tag-muted">Chaos</span>
+              <span class="card-tag card-tag-muted">Incremental</span>
+              <span class="card-tag card-tag-muted">Idle</span>
+              <span class="card-tag card-tag-muted">Prestige</span>
             </div>
             <span class="badge badge-soon">Coming Eventually</span>
           </div>
@@ -1026,14 +1030,48 @@
     // ════════════════════════════════════════════════════
 
     document.querySelectorAll('.game-card').forEach(card => {
+      let targetX = 0, targetY = 0;
+      let currentX = 0, currentY = 0;
+      let hovering = false;
+      let raf = null;
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function animate() {
+        currentX = lerp(currentX, targetX, 0.12);
+        currentY = lerp(currentY, targetY, 0.12);
+
+        // Stop animating when close enough and not hovering
+        if (!hovering && Math.abs(currentX) < 0.01 && Math.abs(currentY) < 0.01) {
+          currentX = 0;
+          currentY = 0;
+          card.style.transform = '';
+          raf = null;
+          return;
+        }
+
+        const lift = 0;
+        const scale = hovering ? 1.01 : lerp(1.01, 1, 1 - (Math.abs(currentX) + Math.abs(currentY)));
+        card.style.transform = `scale(${scale}) perspective(600px) rotateX(${-currentY * 8}deg) rotateY(${currentX * 8}deg)`;
+        raf = requestAnimationFrame(animate);
+      }
+
+      card.addEventListener('mouseenter', () => {
+        hovering = true;
+        card.style.transition = 'box-shadow 0.4s';
+        if (!raf) raf = requestAnimationFrame(animate);
+      });
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        card.style.transform = `translateY(-6px) scale(1.01) perspective(600px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg)`;
+        targetX = (e.clientX - rect.left) / rect.width - 0.5;
+        targetY = (e.clientY - rect.top) / rect.height - 0.5;
       });
       card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
+        hovering = false;
+        targetX = 0;
+        targetY = 0;
+        card.style.transition = '';
+        if (!raf) raf = requestAnimationFrame(animate);
       });
     });
   </script>
