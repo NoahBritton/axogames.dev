@@ -49,20 +49,13 @@
       height: 100vh;
       z-index: 0;
       image-rendering: pixelated;
+      pointer-events: none;
     }
 
     /* ── Content Layer ── */
     .content {
       position: relative;
       z-index: 1;
-      pointer-events: none;
-    }
-
-    .content a,
-    .content button,
-    .content .game-card,
-    .content .about-card {
-      pointer-events: auto;
     }
 
     /* ── Hero ── */
@@ -840,53 +833,45 @@
       // Events
       window.addEventListener('resize', resize);
 
-      canvas.addEventListener('mousemove', (e) => {
+      document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
       });
 
-      canvas.addEventListener('mousedown', (e) => {
+      document.addEventListener('mousedown', (e) => {
         mouseDown = true;
         spawnBurst(e.clientX, e.clientY, 15);
       });
 
-      canvas.addEventListener('mouseup', () => {
+      document.addEventListener('mouseup', () => {
         mouseDown = false;
       });
 
-      canvas.addEventListener('mouseleave', () => {
+      document.addEventListener('mouseleave', () => {
         mouseX = -1000;
         mouseY = -1000;
         mouseDown = false;
       });
 
-      // Touch support
-      canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
+      // Touch support — no preventDefault so scrolling works on mobile
+      document.addEventListener('touchstart', (e) => {
         const t = e.touches[0];
         mouseX = t.clientX;
         mouseY = t.clientY;
         mouseDown = true;
         spawnBurst(t.clientX, t.clientY, 15);
-      }, { passive: false });
+      });
 
-      canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
+      document.addEventListener('touchmove', (e) => {
         const t = e.touches[0];
         mouseX = t.clientX;
         mouseY = t.clientY;
-      }, { passive: false });
+      });
 
-      canvas.addEventListener('touchend', () => {
+      document.addEventListener('touchend', () => {
         mouseDown = false;
         mouseX = -1000;
         mouseY = -1000;
-      });
-
-      // Content layer should pass pointer events through to canvas
-      document.querySelector('.content').addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
       });
 
       init();
