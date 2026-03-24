@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>M&P Design Workshop</title>
+  <style>
+    :root {
+      --bg: #0a0a12;
+      --card: #14131e;
+      --border: #2a2840;
+      --gold: #d4a843;
+      --text: #e0dde8;
+      --muted: #8884a0;
+      --green: #2ecc71;
+      --red: #e74c3c;
+      --blue: #3498db;
+      --orange: #f39c12;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      padding-bottom: 100px;
+    }
+
+    h1 {
+      color: var(--gold);
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      color: var(--gold);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .question {
+      margin-bottom: 18px;
+    }
+
+    .question:last-child {
+      margin-bottom: 0;
+    }
+
+    .q-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .q-label .q-num {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .opt-btn {
+      background: #1c1b2e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 0.82rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.3;
+    }
+
+    .opt-btn:hover {
+      border-color: var(--gold);
+    }
+
+    .opt-btn.selected {
+      background: #1f1e35;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+
+    .opt-btn .opt-label {
+      font-weight: 600;
+    }
+
+    .opt-btn .opt-desc {
+      color: var(--muted);
+      font-size: 0.75rem;
+      display: block;
+      margin-top: 2px;
+    }
+
+    textarea {
+      width: 100%;
+      background: #1c1b2e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+      resize: vertical;
+      min-height: 60px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--gold);
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn:active {
+      opacity: 0.7;
+    }
+
+    .btn-send {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-save {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .progress {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-bottom: 12px;
+    }
+
+    .progress .count {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .toast.error {
+      background: var(--red);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Mortar & Pistol</h1>
+  <p class="subtitle">Design Workshop — 18 Questions</p>
+  <div class="progress">Answered: <span class="count" id="progressCount">0</span> / 18</div>
+
+  <div id="questionsContainer"></div>
+
+  <div class="bottom-bar">
+    <button class="btn btn-save" onclick="saveLocal()">Save Local</button>
+    <button class="btn btn-send" onclick="sendToDiscord()">Send to Discord</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1485718166914207925/EN4xYAWpprqnR51SNyanYtWs4Jj3zbkLlY6Lj1zqySktm2UFSrVy8dIIAzMo-DFxzP8w";
+    const SAVE_KEY = "mp_workshop_answers";
+
+    const SECTIONS = [
+      {
+        id: "W1", title: "W1: Wizard's Bolt Rifle",
+        desc: "Currently just a projectile with high pierce. Proposed: rework to a BEAM weapon.",
+        questions: [
+          {
+            id: "Q1", text: "Should the beam be continuous or pulsed?", options: [
+              { label: "Continuous", desc: "Held ray, tick damage while active. More unique, harder to balance." },
+              { label: "Pulsed", desc: "Brief flash/line for ~0.2s, hits everything, then cooldown. Easier to balance." },
+            ]
+          },
+          {
+            id: "Q2", text: "Should the beam penetrate infinitely or keep pierce count (3-7)?", options: [
+              { label: "Infinite", desc: "Hits everything along the line to max range." },
+              { label: "Pierce count", desc: "Stops after 3-7 enemies (scales with level)." },
+            ]
+          },
+          {
+            id: "Q3", text: "Should the beam auto-aim or fire in a fixed direction?", options: [
+              { label: "Auto-aim", desc: "Tracks nearest enemy, always hits." },
+              { label: "Fixed direction", desc: "Fires toward enemy's position at fire time, can miss." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "W2", title: "W2: Scatter Flask (broken)",
+        desc: "Flask has no collision — flies to a snapshot position and shatters in empty space if enemy moves.",
+        questions: [
+          {
+            id: "Q4", text: "Should the flask shatter on first enemy touch or fly to target area?", options: [
+              { label: "On contact", desc: "Shatters when it hits an enemy. More reliable single-target." },
+              { label: "Target area", desc: "Flies to area and shatters there. Better AoE, needs tracking fix." },
+              { label: "Both", desc: "Shatters on contact OR at destination, whichever comes first." },
+            ]
+          },
+          {
+            id: "Q5", text: "How important is a lobbing arc visual? Worth building a reusable lob system?", options: [
+              { label: "Yes, lob system", desc: "Parabolic arc + ground shadow. Reusable for future grenades/potions." },
+              { label: "Simple arc only", desc: "Just a Y-offset sine wave for this weapon, not a full system." },
+              { label: "Skip arc", desc: "Keep it as a straight-line projectile, just fix the collision." },
+            ]
+          },
+          {
+            id: "Q6", text: "Should shrapnel spray 360° or in a cone away from travel direction?", options: [
+              { label: "360° burst", desc: "Even spread in all directions from impact." },
+              { label: "Forward cone", desc: "Sprays away from the flask's travel direction." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "W3", title: "W3: Powder Keg fuse & AOE",
+        desc: "Fuse works but visual is near-invisible. Blast radius unclear to the player.",
+        questions: [
+          {
+            id: "Q7", text: "Is 0.8s fuse too fast? What timing feels right?", options: [
+              { label: "Keep 0.8s", desc: "Very reactive, almost instant. Drop-and-run." },
+              { label: "1.2-1.5s fixed", desc: "More strategic. Player sees countdown, enemies wander in." },
+              { label: "Scaling (1.5→0.8s)", desc: "Start slow, get faster per level. Best of both." },
+            ]
+          },
+          {
+            id: "Q8", text: "Should Extra Powder drop 2+ kegs, or stay irrelevant to this weapon?", options: [
+              { label: "Yes, multi-keg", desc: "Extra Powder adds more kegs per drop." },
+              { label: "No, keep irrelevant", desc: "Extra Powder only affects projectile weapons." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "W4", title: "W4: Upgrade Synergy",
+        desc: "Bombardier has 3 dead passives. Many passives do nothing for non-projectile weapons.",
+        questions: [
+          {
+            id: "Q9", text: "How should we handle dead passives?", options: [
+              { label: "A: Universal synergy", desc: "Every passive does something for every weapon. Creative but complex." },
+              { label: "B: Smart filtering", desc: "Hide passives that don't affect your weapons. Simpler but less variety." },
+              { label: "Both A+B", desc: "Add synergies AND filter the remaining truly-dead ones." },
+            ]
+          },
+          {
+            id: "Q10", text: "Which creative synergies feel right? (pick all that work)", type: "text",
+            placeholder: "e.g., 'Extra Powder → 2 kegs YES, Birdshot → shrapnel from keg YES, Quicksilver → faster fuse NO too forced'"
+          },
+        ]
+      },
+      {
+        id: "W5", title: "W5: Level-Up Pool",
+        desc: "Only character weapon upgrades + passives. Gets stale after weapon maxes out.",
+        questions: [
+          {
+            id: "Q11", text: "When pool weapons return, curated per hero or universal access?", options: [
+              { label: "Curated", desc: "Each hero gets 2-3 thematic pool weapons. More character identity." },
+              { label: "Universal", desc: "All 6 pool weapons for everyone. More variety per run." },
+            ]
+          },
+          {
+            id: "Q12", text: "Should character weapons get unique talent upgrades in the level-up pool?", options: [
+              { label: "Yes, weapon talents", desc: "Unique upgrades like 'Forked Shot', 'Cluster Charge'. High variety, more design work." },
+              { label: "No, keep stat-only", desc: "Weapon upgrades are just +damage/+rate/etc. Simpler." },
+              { label: "Later", desc: "Good idea but save it for a future phase." },
+            ]
+          },
+          {
+            id: "Q13", text: "Should there be a skip/gold option for unwanted level-ups?", options: [
+              { label: "Yes, skip for gold", desc: "Pass on level-up, get currency (useful if meta-progression added)." },
+              { label: "Yes, skip for small heal", desc: "Pass on level-up, get a heal instead." },
+              { label: "No skip", desc: "Force a choice. Part of the roguelike tension." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "W6", title: "W6: XP Vacuum Pickup",
+        desc: "Request: item that vacuums all XP orbs on the map. XP gems can 'disappear' when pool (100) is full.",
+        questions: [
+          {
+            id: "Q14", text: "What form should the XP vacuum take?", options: [
+              { label: "Ground pickup", desc: "Walk over it to trigger (like heal pickups)." },
+              { label: "Auto-pulse", desc: "Every N seconds, automatically vacuums nearby XP." },
+              { label: "Passive item", desc: "Level-up choice that periodically vacuums all XP." },
+            ]
+          },
+          {
+            id: "Q15", text: "Increase XP gem pool from 100 to prevent disappearing?", options: [
+              { label: "Yes, increase to 200", desc: "More headroom, fewer vanishing gems." },
+              { label: "Keep 100 + vacuum", desc: "Vacuum system handles cleanup." },
+              { label: "Yes + vacuum", desc: "Both: bigger pool AND vacuum pickup." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "W7", title: "W7: Future-Proofing",
+        desc: "Planning for many more weapons. Architecture decisions to make now.",
+        questions: [
+          {
+            id: "Q16", text: "Weapon types: enum+match or class-per-type?", options: [
+              { label: "Keep enum+match", desc: "Simple, current approach. Gets unwieldy at 20+ types." },
+              { label: "Class-per-type", desc: "Each weapon type is its own script. More scalable, needs refactor." },
+              { label: "Decide later", desc: "Keep enum for now, refactor when it actually gets unwieldy." },
+            ]
+          },
+          {
+            id: "Q17", text: "Keep adding new weapon types or reuse existing ones?", options: [
+              { label: "New types freely", desc: "Add SHOTGUN, TRAP, etc. as needed. More variety." },
+              { label: "Reuse existing", desc: "New weapons must fit PROJECTILE/AOE/etc. Simpler but constraining." },
+              { label: "Mix", desc: "Reuse when possible, add new types only when truly unique." },
+            ]
+          },
+          {
+            id: "Q18", text: "Should passive synergy be data-driven (auto-detected) or hardcoded?", options: [
+              { label: "Data-driven", desc: "Passives declare stat_keys, weapons declare what they use. Auto-synergy." },
+              { label: "Keep hardcoded", desc: "Manual control over what affects what. Simpler, more deliberate." },
+              { label: "Hybrid", desc: "Data-driven base + manual overrides for creative synergies." },
+            ]
+          },
+        ]
+      },
+    ];
+
+    let answers = {};
+
+    function init() {
+      const saved = localStorage.getItem(SAVE_KEY);
+      if (saved) {
+        try { answers = JSON.parse(saved); } catch (e) { }
+      }
+      render();
+      updateProgress();
+    }
+
+    function render() {
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = '';
+      SECTIONS.forEach(section => {
+        const div = document.createElement('div');
+        div.className = 'section';
+        let html = `<div class="section-title">${section.title}</div>`;
+        html += `<div class="section-desc">${section.desc}</div>`;
+        section.questions.forEach((q, qi) => {
+          html += `<div class="question">`;
+          html += `<div class="q-label"><span class="q-num">${q.id}</span>: ${q.text}</div>`;
+          if (q.type === 'text') {
+            const val = answers[q.id] || '';
+            html += `<textarea id="ta_${q.id}" placeholder="${q.placeholder || ''}" oninput="onText('${q.id}', this.value)">${val}</textarea>`;
+          } else {
+            html += `<div class="options">`;
+            q.options.forEach((opt, oi) => {
+              const sel = answers[q.id] === opt.label ? 'selected' : '';
+              html += `<button class="opt-btn ${sel}" onclick="onSelect('${q.id}', '${opt.label.replace(/'/g, "\\'")}', this)">`;
+              html += `<span class="opt-label">${opt.label}</span>`;
+              if (opt.desc) html += `<span class="opt-desc">${opt.desc}</span>`;
+              html += `</button>`;
+            });
+            html += `</div>`;
+          }
+          html += `</div>`;
+          if (qi < section.questions.length - 1) html += `<div class="divider"></div>`;
+        });
+        div.innerHTML = html;
+        container.appendChild(div);
+      });
+    }
+
+    function onSelect(qid, value, btn) {
+      answers[qid] = value;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      autoSave();
+      updateProgress();
+    }
+
+    function onText(qid, value) {
+      answers[qid] = value;
+      autoSave();
+      updateProgress();
+    }
+
+    function updateProgress() {
+      let count = 0;
+      for (let i = 1; i <= 18; i++) {
+        const key = "Q" + i;
+        if (answers[key] && answers[key].trim()) count++;
+      }
+      document.getElementById('progressCount').textContent = count;
+    }
+
+    function autoSave() {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(answers));
+    }
+
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (isError ? ' error' : '');
+      setTimeout(() => t.className = 'toast', 2500);
+    }
+
+    function buildMarkdown() {
+      let md = "# Workshop Answers\n\n";
+      SECTIONS.forEach(section => {
+        md += `## ${section.title}\n\n`;
+        section.questions.forEach(q => {
+          const a = answers[q.id] || "(not answered)";
+          md += `**${q.id}**: ${q.text}\n`;
+          md += `> **${a}**\n\n`;
+        });
+      });
+      return md;
+    }
+
+    function saveLocal() {
+      autoSave();
+      const md = buildMarkdown();
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'WORKSHOP_ANSWERS.md';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloaded WORKSHOP_ANSWERS.md');
+    }
+
+    async function sendToDiscord() {
+      const answered = Object.keys(answers).filter(k => answers[k] && answers[k].trim()).length;
+      if (answered === 0) { showToast('Answer at least one question first', true); return; }
+
+      const embeds = [];
+      let currentEmbed = { title: "Workshop Answers", color: 3447003, fields: [], footer: { text: `${answered}/18 answered` }, timestamp: new Date().toISOString() };
+
+      SECTIONS.forEach(section => {
+        section.questions.forEach(q => {
+          const a = answers[q.id];
+          if (a && a.trim()) {
+            if (currentEmbed.fields.length >= 25) {
+              embeds.push(currentEmbed);
+              currentEmbed = { title: "Workshop Answers (cont.)", color: 3447003, fields: [] };
+            }
+            let val = a.length > 1024 ? a.substring(0, 1021) + '...' : a;
+            currentEmbed.fields.push({ name: `${q.id}: ${q.text.substring(0, 200)}`, value: `**${val}**`, inline: false });
+          }
+        });
+      });
+      embeds.push(currentEmbed);
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: "**Design Workshop Responses**", embeds: embeds.slice(0, 10) })
+        });
+        if (res.ok || res.status === 204) {
+          showToast('Sent to Discord!');
+        } else {
+          showToast('Discord error: ' + res.status, true);
+        }
+      } catch (e) {
+        showToast('Network error', true);
+      }
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
