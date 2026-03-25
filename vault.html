@@ -628,14 +628,210 @@
       color: var(--muted);
     }
 
-    @media (max-width: 600px) {
+    /* ============================================
+       NEW ADDITIONS SUMMARY
+       ============================================ */
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .summary-chip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 0.7rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: border-color 0.3s;
+    }
+
+    .summary-chip:hover {
+      border-color: rgba(196, 77, 255, 0.3);
+    }
+
+    .summary-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(196, 77, 255, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    .summary-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .summary-desc {
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    /* ============================================
+       TOC NAV
+       ============================================ */
+
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 1rem;
+    }
+
+    .toc a {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid var(--border);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .toc a:hover {
+      color: var(--accent);
+      border-color: rgba(196, 77, 255, 0.3);
+    }
+
+    .toc a.new-tag {
+      border-color: rgba(196, 77, 255, 0.3);
+      color: var(--accent);
+    }
+
+    /* ============================================
+       MOBILE
+       ============================================ */
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 1.5rem 1rem 3rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      section {
+        margin-bottom: 2.5rem;
+      }
 
       .card-grid,
       .hero-grid,
       .element-grid,
       .evo-grid,
-      .passive-grid {
+      .passive-grid,
+      .summary-grid {
         grid-template-columns: 1fr;
+      }
+
+      .toc {
+        gap: 0.3rem;
+      }
+
+      .toc a {
+        font-size: 0.6rem;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .hero-card,
+      .card,
+      .element-card,
+      .evo-card,
+      .passive-chip {
+        padding: 1rem;
+      }
+
+      .weapon-table,
+      .matrix {
+        font-size: 0.68rem;
+      }
+
+      .weapon-table th,
+      .weapon-table td,
+      .matrix th,
+      .matrix td {
+        padding: 0.4rem 0.5rem;
+      }
+
+      .evo-formula {
+        font-size: 0.75rem;
+      }
+
+      .divider {
+        margin: 2rem auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        padding: 1rem 0.75rem 2rem;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+      }
+
+      .hero-name {
+        font-size: 1rem;
+      }
+
+      .card h3 {
+        font-size: 0.9rem;
+      }
+
+      .weapon-table th,
+      .matrix th {
+        font-size: 0.5rem;
+      }
+
+      .weapon-table td,
+      .matrix td {
+        font-size: 0.62rem;
+        padding: 0.35rem 0.4rem;
+      }
+
+      .element-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .lock-display {
+        gap: 0.5rem;
+      }
+
+      .lock-digit {
+        width: 40px;
+        height: 48px;
+        font-size: 1.3rem;
+      }
+
+      .keypad {
+        grid-template-columns: repeat(3, 48px);
+        gap: 0.4rem;
+      }
+
+      .key {
+        width: 48px;
+        height: 48px;
+        font-size: 1rem;
       }
     }
   </style>
@@ -681,6 +877,59 @@
         <p>A vampire-survivors-style bullet heaven where magic comes from <strong>guns</strong>, not wands. Every weapon
           is a purpose-built magical firearm. Pick a hero, grab weapons, attune to an element, and transmute your
           arsenal into something devastating.</p>
+
+        <h3 style="margin-top:1.5rem; margin-bottom:0.3rem; color:var(--accent); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.15em;">What's New</h3>
+        <div class="summary-grid">
+          <a href="#sec-dash" class="summary-chip" style="text-decoration:none;">
+            <div class="summary-icon" style="color:var(--wind);">~</div>
+            <div>
+              <div class="summary-label">Dash</div>
+              <div class="summary-desc">Alchemical Blink + hero variants</div>
+            </div>
+          </a>
+          <a href="#sec-bosses" class="summary-chip" style="text-decoration:none;">
+            <div class="summary-icon" style="color:var(--fire);">!</div>
+            <div>
+              <div class="summary-label">Bosses & Elites</div>
+              <div class="summary-desc">2 bosses, 4 elite types</div>
+            </div>
+          </a>
+          <a href="#sec-arena" class="summary-chip" style="text-decoration:none;">
+            <div class="summary-icon" style="color:var(--earth);">#</div>
+            <div>
+              <div class="summary-label">Arena Features</div>
+              <div class="summary-desc">Crates, braziers, interactables</div>
+            </div>
+          </a>
+          <a href="#sec-stats" class="summary-chip" style="text-decoration:none;">
+            <div class="summary-icon" style="color:var(--lightning);">%</div>
+            <div>
+              <div class="summary-label">Run Stats</div>
+              <div class="summary-desc">Per-weapon damage breakdown</div>
+            </div>
+          </a>
+          <a href="#sec-forge" class="summary-chip" style="text-decoration:none;">
+            <div class="summary-icon" style="color:var(--accent);">+</div>
+            <div>
+              <div class="summary-label">The Forge</div>
+              <div class="summary-desc">Meta progression & unlocks</div>
+            </div>
+          </a>
+          <a href="#sec-audio" class="summary-chip" style="text-decoration:none;">
+            <div class="summary-icon" style="color:var(--poison);">&gt;</div>
+            <div>
+              <div class="summary-label">Audio Design</div>
+              <div class="summary-desc">Pitch ramping, per-weapon SFX</div>
+            </div>
+          </a>
+          <a href="#sec-vfx" class="summary-chip" style="text-decoration:none;">
+            <div class="summary-icon" style="color:var(--void);">*</div>
+            <div>
+              <div class="summary-label">VFX Clarity</div>
+              <div class="summary-desc">Particle budget, z-index layers</div>
+            </div>
+          </a>
+        </div>
       </section>
 
       <div class="divider"></div>
@@ -695,7 +944,8 @@
             <p class="hero-detail"><strong>Weapon:</strong> Bolt Rifle</p>
             <p class="hero-detail"><strong>Element:</strong> Lightning</p>
             <p class="hero-detail"><strong>Passive:</strong> +10% fire rate</p>
-            <p class="hero-flavor">Enchanted long-barrel rifle. Arcane formulas focus magic into a single devastating piercing bolt.</p>
+            <p class="hero-flavor">Enchanted long-barrel rifle. Arcane formulas focus magic into a single devastating
+              piercing bolt.</p>
           </div>
           <div class="hero-card" style="border-top:3px solid var(--poison);">
             <div class="hero-name" style="color:var(--poison);">The Alchemist</div>
@@ -703,7 +953,8 @@
             <p class="hero-detail"><strong>Weapon:</strong> Scatter Flask</p>
             <p class="hero-detail"><strong>Element:</strong> Poison</p>
             <p class="hero-detail"><strong>Passive:</strong> +12% AoE radius</p>
-            <p class="hero-flavor">Modified blunderbuss that fires unstable flasks. Shatters into volatile shrapnel on impact.</p>
+            <p class="hero-flavor">Modified blunderbuss that fires unstable flasks. Shatters into volatile shrapnel on
+              impact.</p>
           </div>
           <div class="hero-card" style="border-top:3px solid var(--fire);">
             <div class="hero-name" style="color:var(--fire);">The Bombardier</div>
@@ -711,7 +962,8 @@
             <p class="hero-detail"><strong>Weapon:</strong> Powder Keg</p>
             <p class="hero-detail"><strong>Element:</strong> Fire</p>
             <p class="hero-detail"><strong>Passive:</strong> +15% damage</p>
-            <p class="hero-flavor">Massive iron mortar that drops primed explosive kegs. The fuse burns, then everything goes up.</p>
+            <p class="hero-flavor">Massive iron mortar that drops primed explosive kegs. The fuse burns, then everything
+              goes up.</p>
           </div>
           <div class="hero-card" style="border-top:3px solid var(--wind);">
             <div class="hero-name" style="color:var(--wind);">The Assassin</div>
@@ -719,7 +971,8 @@
             <p class="hero-detail"><strong>Weapon:</strong> Twin Barrels</p>
             <p class="hero-detail"><strong>Element:</strong> Wind</p>
             <p class="hero-detail"><strong>Passive:</strong> +15% move speed</p>
-            <p class="hero-flavor">Dual compact pistols with wind vents. Fires both barrels in rapid succession — one-two punch.</p>
+            <p class="hero-flavor">Dual compact pistols with wind vents. Fires both barrels in rapid succession —
+              one-two punch.</p>
           </div>
         </div>
       </section>
@@ -728,12 +981,33 @@
 
       <section>
         <h2>Character Weapons</h2>
-        <p>Each hero starts with a unique weapon. Exclusive — not in the level-up pool. Scale to Lv5, no transmutation.</p>
+        <p>Each hero starts with a unique weapon. Exclusive — not in the level-up pool. Scale to Lv5, no transmutation.
+        </p>
         <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
-          <div class="card" style="border-top:3px solid #44aaff;"><h3 style="color:#44aaff;">Bolt Rifle</h3><p style="margin-bottom:0.4rem;"><strong>Wizard</strong> · PIERCING</p><p>Fast bolt pierces ALL enemies in a line. Long range, high damage.</p><p style="font-size:0.7rem; color:var(--accent);">20-40 dmg · 0.8-1.2/s · 3-7 pierce</p></div>
-          <div class="card" style="border-top:3px solid #33dd33;"><h3 style="color:#33dd33;">Scatter Flask</h3><p style="margin-bottom:0.4rem;"><strong>Alchemist</strong> · BURST</p><p>Flask shatters into 4-8 shrapnel on impact. Chaotic AoE.</p><p style="font-size:0.7rem; color:var(--accent);">10 + 4×shrapnel · 0.7-1.0/s</p></div>
-          <div class="card" style="border-top:3px solid #ff4400;"><h3 style="color:#ff4400;">Powder Keg</h3><p style="margin-bottom:0.4rem;"><strong>Bombardier</strong> · MINE</p><p>Drops barrel at your position. 0.8s fuse, then massive detonation.</p><p style="font-size:0.7rem; color:var(--accent);">25-60 dmg · 0.5-0.7/s · 90px radius</p></div>
-          <div class="card" style="border-top:3px solid #aaeeff;"><h3 style="color:#aaeeff;">Twin Barrels</h3><p style="margin-bottom:0.4rem;"><strong>Assassin</strong> · BURST-FIRE</p><p>2 rapid shots (0.1s apart). Fast projectiles, quick cooldown.</p><p style="font-size:0.7rem; color:var(--accent);">10-22 ×2 · 1.2-1.8 bursts/s</p></div>
+          <div class="card" style="border-top:3px solid #44aaff;">
+            <h3 style="color:#44aaff;">Bolt Rifle</h3>
+            <p style="margin-bottom:0.4rem;"><strong>Wizard</strong> · PIERCING</p>
+            <p>Fast bolt pierces ALL enemies in a line. Long range, high damage.</p>
+            <p style="font-size:0.7rem; color:var(--accent);">20-40 dmg · 0.8-1.2/s · 3-7 pierce</p>
+          </div>
+          <div class="card" style="border-top:3px solid #33dd33;">
+            <h3 style="color:#33dd33;">Scatter Flask</h3>
+            <p style="margin-bottom:0.4rem;"><strong>Alchemist</strong> · BURST</p>
+            <p>Flask shatters into 4-8 shrapnel on impact. Chaotic AoE.</p>
+            <p style="font-size:0.7rem; color:var(--accent);">10 + 4×shrapnel · 0.7-1.0/s</p>
+          </div>
+          <div class="card" style="border-top:3px solid #ff4400;">
+            <h3 style="color:#ff4400;">Powder Keg</h3>
+            <p style="margin-bottom:0.4rem;"><strong>Bombardier</strong> · MINE</p>
+            <p>Drops barrel at your position. 0.8s fuse, then massive detonation.</p>
+            <p style="font-size:0.7rem; color:var(--accent);">25-60 dmg · 0.5-0.7/s · 90px radius</p>
+          </div>
+          <div class="card" style="border-top:3px solid #aaeeff;">
+            <h3 style="color:#aaeeff;">Twin Barrels</h3>
+            <p style="margin-bottom:0.4rem;"><strong>Assassin</strong> · BURST-FIRE</p>
+            <p>2 rapid shots (0.1s apart). Fast projectiles, quick cooldown.</p>
+            <p style="font-size:0.7rem; color:var(--accent);">10-22 ×2 · 1.2-1.8 bursts/s</p>
+          </div>
         </div>
       </section>
 
@@ -1124,6 +1398,440 @@
       <div class="divider"></div>
 
       <section>
+        <h2 id="sec-dash">Dodge / Dash — Alchemical Blink</h2>
+        <p><strong>Space</strong> / bumper. Brief alchemical dissolve, reappear ahead. I-frames on first 0.08s.</p>
+        <div class="table-wrap">
+          <table class="weapon-table">
+            <thead>
+              <tr>
+                <th>Stat</th>
+                <th>Value</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="weapon-name">Distance</td>
+                <td>100px</td>
+                <td>~2x character width</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">Duration</td>
+                <td>0.12s</td>
+                <td>Near-instant</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">Cooldown</td>
+                <td>2.0s</td>
+                <td>Rewards timing</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">I-Frames</td>
+                <td>0.08s</td>
+                <td>Dash through attacks</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 style="margin-top:1.2rem; margin-bottom:0.6rem;">Hero Dash Variations</h3>
+        <div class="card-grid">
+          <div class="card" style="border-top:3px solid var(--lightning);">
+            <h3 style="color:var(--lightning);">Arc Step</h3>
+            <p><strong>Wizard</strong> — Lightning trail damages enemies passed through (5 dmg)</p>
+          </div>
+          <div class="card" style="border-top:3px solid var(--poison);">
+            <h3 style="color:var(--poison);">Caustic Roll</h3>
+            <p><strong>Alchemist</strong> — Drops a small poison puddle at start position</p>
+          </div>
+          <div class="card" style="border-top:3px solid var(--fire);">
+            <h3 style="color:var(--fire);">Blast Jump</h3>
+            <p><strong>Bombardier</strong> — Knockback on enemies near start position</p>
+          </div>
+          <div class="card" style="border-top:3px solid var(--wind);">
+            <h3 style="color:var(--wind);">Smoke Dash</h3>
+            <p><strong>Assassin</strong> — 30% longer distance (130px). Pure speed</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section>
+        <h2 id="sec-bosses">Bosses & Elites</h2>
+        <p>Elites spawn from 3:00+. Bosses at 5:00 and 10:00. Bosses always spawn support enemies — no pure
+          single-target checks.</p>
+
+        <h3 style="margin-bottom:0.6rem;">Elite Types</h3>
+        <p style="margin-bottom:0.8rem;">5x HP, 1.5x size, 10x XP. Each adds one mechanic.</p>
+        <div class="card-grid">
+          <div class="card">
+            <h3 style="color:#ffd94d;">Shielded</h3>
+            <p>50% damage reduction from the front. Must flank or use AoE.</p><span class="tag"
+              style="color:#ffd94d;">Gold glow</span>
+          </div>
+          <div class="card">
+            <h3 style="color:var(--fire);">Volatile</h3>
+            <p>Explodes on death — 80px radius, 15 dmg. Keep distance.</p><span class="tag"
+              style="color:var(--fire);">Pulsing red</span>
+          </div>
+          <div class="card">
+            <h3 style="color:var(--poison);">Spawner</h3>
+            <p>Spawns 2 Wisps every 3s while alive. Kill fast.</p><span class="tag" style="color:var(--poison);">Green
+              trail</span>
+          </div>
+          <div class="card">
+            <h3 style="color:var(--void);">Magnetic</h3>
+            <p>Pulls XP gems toward itself. Steals your experience.</p><span class="tag"
+              style="color:var(--void);">Purple vortex</span>
+          </div>
+        </div>
+
+        <h3 style="margin-top:1.5rem; margin-bottom:0.6rem;">Boss Encounters</h3>
+        <div class="hero-grid">
+          <div class="hero-card" style="border-top:3px solid var(--earth);">
+            <div class="hero-name" style="color:var(--earth);">The Iron Warden</div>
+            <div class="hero-class">5:00 — Slow, armored, summons minions</div>
+            <p class="hero-detail"><strong>HP:</strong> 800 + (kills × 0.5)</p>
+            <p class="hero-detail"><strong>Ground Slam:</strong> 120px AoE, spawns 4 Ironclads</p>
+            <p class="hero-detail"><strong>Shield Wall:</strong> 75% DR for 3s, minions speed +50%</p>
+            <p class="hero-detail"><strong>Charge:</strong> Dash at 200 speed, leaves damage trail</p>
+            <p class="hero-flavor">Drop: Lodestone Pulse + 200 XP</p>
+          </div>
+          <div class="hero-card" style="border-top:3px solid var(--lightning);">
+            <div class="hero-name" style="color:var(--lightning);">The Storm Weaver</div>
+            <div class="hero-class">10:00 — Fast, erratic, area denial</div>
+            <p class="hero-detail"><strong>HP:</strong> 1500 + (kills × 0.5)</p>
+            <p class="hero-detail"><strong>Wisp Burst:</strong> Spawns 8 Wisps in a ring</p>
+            <p class="hero-detail"><strong>Lightning Trail:</strong> Zigzag dash, damaging zones</p>
+            <p class="hero-detail"><strong>Static Field:</strong> 200px pushback pulse, 15 dmg + stun</p>
+            <p class="hero-flavor">Drop: Lodestone Pulse + 400 XP + free level-up</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section>
+        <h2 id="sec-arena">Arena Features</h2>
+        <p>Interactive elements in the arena. Reasons to move beyond dodging.</p>
+
+        <h3 style="margin-bottom:0.6rem;">Breakable Crates</h3>
+        <p>8-12 on map. 15 HP. Respawn 15-20s after destroyed.</p>
+        <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+          <div class="card">
+            <h3>60%</h3>
+            <p>XP cluster (3-5 gems)</p>
+          </div>
+          <div class="card">
+            <h3>20%</h3>
+            <p>Heal pickup</p>
+          </div>
+          <div class="card">
+            <h3>15%</h3>
+            <p>Lodestone Pulse</p>
+          </div>
+          <div class="card">
+            <h3>5%</h3>
+            <p>Arcane Dust (+5)</p>
+          </div>
+        </div>
+
+        <h3 style="margin-top:1.2rem; margin-bottom:0.6rem;">Alchemical Braziers</h3>
+        <p>2 active at once. Walk into to consume. Respawn elsewhere after 45s.</p>
+        <div class="card-grid">
+          <div class="card" style="border-top:3px solid var(--wind);">
+            <h3 style="color:var(--wind);">Speed Brazier</h3>
+            <p>+30% move speed for 8s</p>
+          </div>
+          <div class="card" style="border-top:3px solid var(--fire);">
+            <h3 style="color:var(--fire);">Power Brazier</h3>
+            <p>+20% damage for 8s</p>
+          </div>
+          <div class="card" style="border-top:3px solid #ffd94d;">
+            <h3 style="color:#ffd94d;">Shield Brazier</h3>
+            <p>Block next hit (up to 15s)</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section>
+        <h2 id="sec-stats">End-of-Run Stats</h2>
+        <p>Tabbed post-run breakdown. Understand your build, learn synergies, see huge totals.</p>
+
+        <h3 style="margin-bottom:0.6rem;">Three tabs</h3>
+        <div class="card-grid">
+          <div class="card">
+            <h3>Summary</h3>
+            <p>Time, level, kills, total damage, bosses defeated. The quick glance.</p><span class="tag">Default
+              tab</span>
+          </div>
+          <div class="card">
+            <h3>Weapons</h3>
+            <p>Per-weapon damage bar chart. Ranked by damage. Color-coded. Kill counts.</p><span class="tag"
+              style="color:var(--accent);">Key feature</span>
+          </div>
+          <div class="card">
+            <h3>Build</h3>
+            <p>Full loadout: weapons, passives, element. Stat contribution breakdown.</p><span class="tag">Detail
+              view</span>
+          </div>
+        </div>
+
+        <h3 style="margin-top:1.2rem; margin-bottom:0.6rem;">Tracked per run</h3>
+        <div class="passive-grid">
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--accent);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Total Damage</div>
+              <div class="passive-desc">Aggregate + per weapon</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--fire);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Enemies Killed</div>
+              <div class="passive-desc">Total + per weapon</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--lightning);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Highest Hit</div>
+              <div class="passive-desc">Single biggest number</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--poison);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Kill Streak</div>
+              <div class="passive-desc">Most kills in 5s</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--wind);"></div>
+            <div class="passive-info">
+              <div class="passive-name">XP Collected</div>
+              <div class="passive-desc">+ gems lost to pool cap</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--earth);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Damage Taken</div>
+              <div class="passive-desc">+ healing received</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section>
+        <h2 id="sec-forge">Meta Progression — The Forge</h2>
+        <p>Permanent upgrades purchased with <strong>Arcane Dust</strong>. Makes every run matter, even losses.</p>
+
+        <h3 style="margin-bottom:0.6rem;">Arcane Dust Earnings</h3>
+        <div class="table-wrap">
+          <table class="weapon-table">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="weapon-name">Base (per run)</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">Per minute survived</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">Per 100 enemies killed</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">Per boss defeated</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">Victory bonus</td>
+                <td>50</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">First victory (per hero)</td>
+                <td>100</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top:1.2rem; margin-bottom:0.6rem;">Forge Enhancements</h3>
+        <p>5 levels each. Apply to ALL future runs on ALL characters.</p>
+        <div class="passive-grid">
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--fire);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Tempered Barrels</div>
+              <div class="passive-desc">+5% damage/lv</div>
+              <div class="passive-max">Max: +25%</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:#996633;"></div>
+            <div class="passive-info">
+              <div class="passive-name">Oiled Mechanisms</div>
+              <div class="passive-desc">+4% fire rate/lv</div>
+              <div class="passive-max">Max: +20%</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:#33cc33;"></div>
+            <div class="passive-info">
+              <div class="passive-name">Alchemist's Vigor</div>
+              <div class="passive-desc">+10 max HP/lv</div>
+              <div class="passive-max">Max: +50 HP</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--wind);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Swift Boots</div>
+              <div class="passive-desc">+4% move speed/lv</div>
+              <div class="passive-max">Max: +20%</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--void);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Magnetic Core</div>
+              <div class="passive-desc">+10% pickup range/lv</div>
+              <div class="passive-max">Max: +50%</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--accent);"></div>
+            <div class="passive-info">
+              <div class="passive-name">Lucky Loadout</div>
+              <div class="passive-desc">+1 reroll/lv</div>
+              <div class="passive-max">Max: +5</div>
+            </div>
+          </div>
+          <div class="passive-chip">
+            <div class="passive-dot" style="background:var(--lightning);"></div>
+            <div class="passive-info">
+              <div class="passive-name">XP Attunement</div>
+              <div class="passive-desc">+5% XP gain/lv</div>
+              <div class="passive-max">Max: +25%</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:1.2rem; margin-bottom:0.6rem;">Achievement Unlocks</h3>
+        <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+          <div class="card">
+            <h3>Pool Weapons</h3>
+            <p>Complete 1 run with each hero → un-archives all 6 pool weapons</p>
+          </div>
+          <div class="card">
+            <h3>Weapon Talents</h3>
+            <p>Max character weapon 3 times → talent upgrades in pool</p>
+          </div>
+          <div class="card">
+            <h3>Hard Mode</h3>
+            <p>Win with any character → 1.5x difficulty, 1.5x Arcane Dust</p>
+          </div>
+          <div class="card">
+            <h3>Elemental Mastery</h3>
+            <p>Win with each element → dual-element attunement</p>
+          </div>
+          <div class="card">
+            <h3>The Alchemist's Journal</h3>
+            <p>Kill 1000 enemies → per-weapon stats in end screen</p>
+          </div>
+          <div class="card">
+            <h3>True Ending</h3>
+            <p>Beat Storm Weaver on Hard → 20-min run + third boss</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section>
+        <h2 id="sec-audio">Audio Design</h2>
+        <p>Audio escalation rules and per-weapon sound design targets.</p>
+        <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+          <div class="card">
+            <h3>Pitch Ramping</h3>
+            <p>XP pickups in rapid succession play at ascending pitch. +1 semitone per pickup, cap at +8. Reset after
+              0.5s gap.</p>
+          </div>
+          <div class="card">
+            <h3>Kill Variants</h3>
+            <p>3-4 death sound variants per enemy type. Random selection prevents single-sound fatigue.</p>
+          </div>
+          <div class="card">
+            <h3>Overkill Feedback</h3>
+            <p>3x+ overkill → beefier death sound. Lower pitch, louder, slight reverb. Transmuted weapons feel
+              devastating.</p>
+          </div>
+          <div class="card">
+            <h3>Per-Weapon SFX</h3>
+            <p>Each weapon type gets unique fire + hit sounds matching its fantasy. No shared sfx_shoot.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section>
+        <h2 id="sec-vfx">VFX Clarity System</h2>
+        <p>Budget-based particle management. Keep chaos readable at 200 enemies + 4 weapons firing.</p>
+        <div class="table-wrap">
+          <table class="weapon-table">
+            <thead>
+              <tr>
+                <th>Priority Tier</th>
+                <th>Examples</th>
+                <th>At Budget Cap</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="weapon-name">Critical</td>
+                <td>Player, boss, HP bars, HUD</td>
+                <td>Never culled</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">High</td>
+                <td>Projectiles, dash trail, boss attacks</td>
+                <td>Particle count -50%</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">Medium</td>
+                <td>Impact effects, death bursts</td>
+                <td>Skipped entirely</td>
+              </tr>
+              <tr>
+                <td class="weapon-name">Low</td>
+                <td>Ambient particles, orbiter trails</td>
+                <td>First to cull</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:0.8rem;">Budget cap: <strong>150 active GPUParticles2D emitters</strong>. Z-index:
+          ground(0) → pickups(5) → enemies(10) → player(15) → projectiles(20) → UI(100).</p>
+      </section>
+
+      <div class="divider"></div>
+
+      <section>
         <h2>Roadmap</h2>
         <ul class="roadmap-list">
           <li class="roadmap-item"><span class="roadmap-status status-done">Done</span>
@@ -1138,13 +1846,13 @@
               <div class="roadmap-desc">Kenney UI (~40%), base weapon VFX (6/6)</div>
             </div>
           </li>
-          <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span>
+          <li class="roadmap-item"><span class="roadmap-status status-done">Done</span>
             <div class="roadmap-text">
               <div class="roadmap-name">R1: Re-Theme</div>
-              <div class="roadmap-desc">Rename all assets to M&P theming</div>
+              <div class="roadmap-desc">Renamed all assets to M&P theming</div>
             </div>
           </li>
-          <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span>
+          <li class="roadmap-item"><span class="roadmap-status status-done">Done</span>
             <div class="roadmap-text">
               <div class="roadmap-name">R2: Character Select</div>
               <div class="roadmap-desc">4 heroes with starting loadouts</div>
@@ -1158,14 +1866,50 @@
           </li>
           <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span>
             <div class="roadmap-text">
-              <div class="roadmap-name">A3c-A4: Content + Balance</div>
-              <div class="roadmap-desc">Enemy variants, bosses, DPS tuning</div>
+              <div class="roadmap-name">A3c: Movement & Arena</div>
+              <div class="roadmap-desc">Dodge/dash, breakable crates, alchemical braziers</div>
+            </div>
+          </li>
+          <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span>
+            <div class="roadmap-text">
+              <div class="roadmap-name">A3d: Bosses & Elites</div>
+              <div class="roadmap-desc">4 elite types, Iron Warden, Storm Weaver</div>
+            </div>
+          </li>
+          <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span>
+            <div class="roadmap-text">
+              <div class="roadmap-name">A3e: Audio Overhaul</div>
+              <div class="roadmap-desc">Per-weapon SFX, pitch ramping, kill variants, boss audio</div>
+            </div>
+          </li>
+          <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span>
+            <div class="roadmap-text">
+              <div class="roadmap-name">A4: Stats & Balance</div>
+              <div class="roadmap-desc">End-of-run stats, per-weapon DPS tracking, balance tuning</div>
+            </div>
+          </li>
+          <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span>
+            <div class="roadmap-text">
+              <div class="roadmap-name">A5: VFX Clarity</div>
+              <div class="roadmap-desc">Particle budget system, z-index layering, visual clarity</div>
             </div>
           </li>
           <li class="roadmap-item"><span class="roadmap-status status-future">Future</span>
             <div class="roadmap-text">
-              <div class="roadmap-name">B1-B2: Art & Meta</div>
-              <div class="roadmap-desc">Pixel art, permanent upgrades, maps</div>
+              <div class="roadmap-name">B1: Art & Effects</div>
+              <div class="roadmap-desc">Pixel art, entity sprites, evolution VFX</div>
+            </div>
+          </li>
+          <li class="roadmap-item"><span class="roadmap-status status-future">Future</span>
+            <div class="roadmap-text">
+              <div class="roadmap-name">B2: Meta Progression (The Forge)</div>
+              <div class="roadmap-desc">Arcane Dust, permanent upgrades, achievement unlocks</div>
+            </div>
+          </li>
+          <li class="roadmap-item"><span class="roadmap-status status-future">Future</span>
+            <div class="roadmap-text">
+              <div class="roadmap-name">B3: Maps & Variants</div>
+              <div class="roadmap-desc">Multiple arenas, environmental hazards, map mechanics</div>
             </div>
           </li>
         </ul>
