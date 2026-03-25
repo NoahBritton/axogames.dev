@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wiki — Mortar and Pistol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#0a0810;--surface:#12101e;--card:#16132a;--border:rgba(196,77,255,0.12);--text:#eeeef4;--muted:#6a6a8e;--accent:#c44dff;--accent-2:#ff6b9d;--accent-3:#4dccff;--fire:#ff4400;--earth:#8b6914;--lightning:#44aaff;--wind:#aaeeff;--poison:#33dd33;--void:#9933ff;--light:#ffeeaa;--sidebar:240px;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;}
+
+    /* SIDEBAR */
+    .sidebar{position:fixed;top:0;left:0;width:var(--sidebar);height:100vh;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:1.5rem 0;transition:transform 0.3s;}
+    .sidebar-header{padding:0 1.2rem 1rem;border-bottom:1px solid var(--border);margin-bottom:0.8rem;}
+    .sidebar-title{font-size:0.9rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .sidebar-sub{font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;margin-top:0.15rem;}
+    .sidebar-home{display:block;font-size:0.6rem;color:var(--muted);text-decoration:none;margin-top:0.6rem;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;}
+    .sidebar-home:hover{color:var(--accent);}
+    .nav-link{display:block;padding:0.45rem 1.2rem;font-size:0.72rem;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all 0.2s;letter-spacing:0.02em;}
+    .nav-link:hover{color:var(--text);background:rgba(196,77,255,0.04);}
+    .nav-link.active{color:var(--accent);border-left-color:var(--accent);background:rgba(196,77,255,0.06);}
+    .nav-divider{height:1px;background:var(--border);margin:0.5rem 1.2rem;}
+
+    /* HAMBURGER */
+    .hamburger{display:none;position:fixed;top:1rem;left:1rem;z-index:200;background:var(--surface);border:1px solid var(--border);width:36px;height:36px;cursor:pointer;align-items:center;justify-content:center;}
+    .hamburger span{display:block;width:16px;height:2px;background:var(--text);transition:all 0.3s;position:relative;}
+    .hamburger span::before,.hamburger span::after{content:'';position:absolute;width:16px;height:2px;background:var(--text);transition:all 0.3s;}
+    .hamburger span::before{top:-5px;}
+    .hamburger span::after{top:5px;}
+    .hamburger.open span{background:transparent;}
+    .hamburger.open span::before{transform:rotate(45deg);top:0;}
+    .hamburger.open span::after{transform:rotate(-45deg);top:0;}
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;}
+
+    /* MAIN */
+    .main{margin-left:var(--sidebar);padding:3rem 2.5rem 4rem;max-width:960px;}
+    section{margin-bottom:3rem;}
+    h1{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.3rem;}
+    h2{font-size:1.4rem;font-weight:800;color:var(--text);padding-bottom:0.5rem;border-bottom:2px solid var(--border);margin-bottom:1rem;}
+    h3{font-size:1rem;font-weight:700;margin-bottom:0.5rem;margin-top:1.2rem;}
+    p{color:var(--muted);font-size:0.82rem;margin-bottom:0.8rem;}
+    strong{color:var(--text);font-weight:600;}
+    .divider{width:60px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);margin:2.5rem 0;opacity:0.3;}
+
+    /* GRIDS */
+    .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+    .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.8rem;}
+    .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.8rem;}
+
+    /* CARDS */
+    .card{background:var(--card);border:1px solid var(--border);padding:1.25rem;position:relative;overflow:hidden;transition:border-color 0.3s;}
+    .card:hover{border-color:rgba(196,77,255,0.25);}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+    .card h3{font-size:1rem;margin-bottom:0.3rem;margin-top:0;}
+    .card p{font-size:0.78rem;margin-bottom:0.3rem;}
+    .tag{display:inline-block;margin-top:0.5rem;font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.15rem 0.4rem;border:1px solid var(--border);}
+
+    /* HERO CARDS */
+    .hero-card{background:var(--card);border:1px solid var(--border);padding:1.5rem;position:relative;}
+    .hero-name{font-size:1.15rem;font-weight:800;margin-bottom:0.15rem;}
+    .hero-class{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.5rem;}
+    .hero-detail{font-size:0.78rem;color:var(--muted);margin-bottom:0.2rem;}
+    .hero-flavor{font-size:0.72rem;color:var(--muted);margin-top:0.5rem;font-style:italic;}
+
+    /* ELEMENT CARDS */
+    .element-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;transition:border-color 0.3s;}
+    .element-card:hover{border-color:rgba(255,255,255,0.1);}
+    .element-name{font-size:1rem;font-weight:700;margin-bottom:0.3rem;}
+    .element-stat{font-size:0.72rem;color:var(--muted);margin-bottom:0.1rem;}
+    .element-effect{font-size:0.78rem;color:var(--text);margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border);}
+
+    /* TABLES */
+    .table-wrap{overflow-x:auto;margin:0.8rem 0;}
+    table{width:100%;border-collapse:collapse;font-size:0.78rem;}
+    th{text-align:left;padding:0.6rem 0.8rem;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);border-bottom:2px solid var(--border);}
+    td{padding:0.6rem 0.8rem;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--muted);}
+    tr:hover td{background:rgba(196,77,255,0.03);}
+    .weapon-name{color:var(--text);font-weight:600;}
+    .weapon-color{width:8px;height:8px;display:inline-block;margin-right:0.4rem;vertical-align:middle;}
+
+    /* MATRIX */
+    .matrix th{text-align:center;font-size:0.55rem;}
+    .matrix th:first-child{text-align:left;}
+    .matrix td{text-align:center;}
+    .matrix td:first-child{text-align:left;color:var(--text);font-weight:600;}
+    .matrix td.special{color:var(--text);background:rgba(196,77,255,0.04);}
+    .matrix td.special:hover{background:rgba(196,77,255,0.1);}
+
+    /* EVO CARDS */
+    .evo-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;}
+    .evo-formula{font-size:0.82rem;margin-bottom:0.3rem;}
+    .evo-base{color:var(--text);font-weight:600;}
+    .evo-plus{color:var(--muted);margin:0 0.3rem;}
+    .evo-passive{color:var(--accent-3);}
+    .evo-arrow{color:var(--muted);margin:0 0.3rem;}
+    .evo-result{font-weight:700;}
+    .evo-stats{font-size:0.7rem;color:var(--muted);}
+
+    /* PASSIVE CHIPS */
+    .passive-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.6rem;}
+    .passive-chip{display:flex;align-items:center;gap:0.6rem;background:var(--card);border:1px solid var(--border);padding:0.6rem 0.8rem;}
+    .passive-dot{width:8px;height:8px;flex-shrink:0;}
+    .passive-name{font-size:0.78rem;font-weight:600;color:var(--text);}
+    .passive-desc{font-size:0.65rem;color:var(--muted);}
+    .passive-max{font-size:0.6rem;color:var(--accent);margin-top:0.1rem;}
+
+    /* SUMMARY CHIPS */
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.5rem;margin-top:0.8rem;}
+    .summary-chip{display:flex;align-items:center;gap:0.6rem;background:var(--card);border:1px solid var(--border);padding:0.6rem 0.8rem;text-decoration:none;transition:border-color 0.2s;}
+    .summary-chip:hover{border-color:rgba(196,77,255,0.3);}
+    .summary-icon{font-size:1rem;width:24px;text-align:center;}
+    .summary-label{font-size:0.75rem;font-weight:600;color:var(--text);}
+    .summary-desc{font-size:0.62rem;color:var(--muted);}
+
+    /* ROADMAP */
+    .roadmap-list{list-style:none;}
+    .roadmap-item{display:flex;align-items:flex-start;gap:0.8rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.03);}
+    .roadmap-status{font-size:0.5rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.2rem 0.5rem;flex-shrink:0;margin-top:0.1rem;}
+    .status-done{background:rgba(51,204,51,0.12);color:#33cc33;border:1px solid rgba(51,204,51,0.2);}
+    .status-partial{background:rgba(255,170,0,0.1);color:#ffaa00;border:1px solid rgba(255,170,0,0.2);}
+    .status-planned{background:rgba(196,77,255,0.08);color:var(--accent);border:1px solid rgba(196,77,255,0.2);}
+    .status-future{background:rgba(77,204,255,0.06);color:var(--accent-3);border:1px solid rgba(77,204,255,0.15);}
+    .roadmap-name{font-size:0.82rem;font-weight:600;color:var(--text);}
+    .roadmap-desc{font-size:0.7rem;color:var(--muted);}
+
+    /* RESEARCH ACCORDION */
+    .game-accord{background:var(--card);border:1px solid var(--border);margin-bottom:0.5rem;overflow:hidden;}
+    .game-accord-header{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;cursor:pointer;transition:background 0.2s;user-select:none;}
+    .game-accord-header:hover{background:rgba(196,77,255,0.04);}
+    .game-accord-title{font-size:0.88rem;font-weight:700;color:var(--text);}
+    .game-accord-tags{display:flex;gap:0.4rem;flex-wrap:wrap;}
+    .game-accord-tag{font-size:0.5rem;padding:0.1rem 0.35rem;border:1px solid var(--border);color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
+    .game-accord-arrow{color:var(--muted);font-size:0.7rem;transition:transform 0.3s;flex-shrink:0;margin-left:0.5rem;}
+    .game-accord.open .game-accord-arrow{transform:rotate(180deg);}
+    .game-accord-body{max-height:0;overflow:hidden;transition:max-height 0.4s ease;}
+    .game-accord.open .game-accord-body{max-height:2000px;}
+    .game-accord-content{padding:0 1rem 1rem;font-size:0.78rem;color:var(--muted);}
+    .game-accord-content strong{color:var(--text);}
+    .game-accord-content ul{padding-left:1.2rem;margin:0.4rem 0;}
+    .game-accord-content li{margin-bottom:0.2rem;}
+    .game-stat-row{display:flex;gap:1rem;flex-wrap:wrap;margin:0.4rem 0 0.6rem;}
+    .game-stat{font-size:0.65rem;padding:0.2rem 0.5rem;background:var(--surface);border:1px solid var(--border);}
+    .game-stat strong{color:var(--accent);font-size:0.6rem;}
+
+    /* PATTERN CARDS */
+    .pattern-card{background:var(--card);border:1px solid var(--border);padding:1rem;border-left:3px solid var(--accent);}
+    .pattern-card h4{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.3rem;}
+    .pattern-card p{font-size:0.75rem;margin-bottom:0;}
+
+    /* FOOTER */
+    .wiki-footer{text-align:center;padding:2rem 0;font-size:0.65rem;color:var(--muted);opacity:0.4;}
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .hamburger{display:flex;}
+      .overlay.show{display:block;}
+      .main{margin-left:0;padding:3.5rem 1rem 3rem;}
+      .grid-2,.grid-3,.grid-4,.passive-grid,.summary-grid{grid-template-columns:1fr;}
+      h1{font-size:1.6rem;}
+      h2{font-size:1.2rem;}
+    }
+  </style>
+</head>
+<body>
+
+<button class="hamburger" id="hamburger" aria-label="Menu"><span></span></button>
+<div class="overlay" id="overlay"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Mortar and Pistol</div>
+    <div class="sidebar-sub">Design Wiki</div>
+    <a href="/" class="sidebar-home">&larr; axogames.dev</a>
+  </div>
+  <a href="#overview" class="nav-link active">Overview</a>
+  <a href="#heroes" class="nav-link">Heroes</a>
+  <a href="#weapons" class="nav-link">Weapons</a>
+  <a href="#elements" class="nav-link">Elements</a>
+  <a href="#passives" class="nav-link">Passives</a>
+  <a href="#combat" class="nav-link">Combat</a>
+  <a href="#arena" class="nav-link">Arena</a>
+  <a href="#progression" class="nav-link">Progression</a>
+  <a href="#technical" class="nav-link">Technical</a>
+  <a href="#roadmap" class="nav-link">Roadmap</a>
+  <div class="nav-divider"></div>
+  <a href="#research" class="nav-link">Research</a>
+</nav>
+
+<div class="main">
+
+<!-- ===== OVERVIEW ===== -->
+<section id="overview">
+  <h1>Mortar and Pistol</h1>
+  <p>Medieval fantasy bullet heaven — magic-powered guns, alchemical weapons, elemental affinities.</p>
+  <p>A vampire-survivors-style bullet heaven where magic comes from <strong>guns</strong>, not wands. Every weapon is a purpose-built magical firearm. Pick a hero, grab weapons, attune to an element, and transmute your arsenal into something devastating.</p>
+  <h3 style="color:var(--accent);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;">Quick Links</h3>
+  <div class="summary-grid">
+    <a href="#combat" class="summary-chip"><div class="summary-icon" style="color:var(--wind);">~</div><div><div class="summary-label">Dash</div><div class="summary-desc">Alchemical Blink + hero variants</div></div></a>
+    <a href="#combat" class="summary-chip"><div class="summary-icon" style="color:var(--fire);">!</div><div><div class="summary-label">Bosses & Elites</div><div class="summary-desc">2 bosses, 4 elite types</div></div></a>
+    <a href="#arena" class="summary-chip"><div class="summary-icon" style="color:var(--earth);">#</div><div><div class="summary-label">Arena Features</div><div class="summary-desc">Crates, braziers, interactables</div></div></a>
+    <a href="#progression" class="summary-chip"><div class="summary-icon" style="color:var(--accent);">+</div><div><div class="summary-label">The Forge</div><div class="summary-desc">Meta progression & unlocks</div></div></a>
+    <a href="#technical" class="summary-chip"><div class="summary-icon" style="color:var(--void);">*</div><div><div class="summary-label">VFX Clarity</div><div class="summary-desc">Particle budget, z-index layers</div></div></a>
+    <a href="#research" class="summary-chip"><div class="summary-icon" style="color:var(--accent-3);">?</div><div><div class="summary-label">Research</div><div class="summary-desc">Survivor-like systems analysis</div></div></a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== HEROES ===== -->
+<section id="heroes">
+  <h2>Heroes</h2>
+  <p>Each hero starts with a weapon, an elemental affinity, and a unique passive.</p>
+  <div class="grid-2">
+    <div class="hero-card" style="border-top:3px solid var(--lightning);">
+      <div class="hero-name" style="color:var(--lightning);">The Wizard</div>
+      <div class="hero-class">Mid-range precision</div>
+      <p class="hero-detail"><strong>Weapon:</strong> Bolt Rifle</p>
+      <p class="hero-detail"><strong>Element:</strong> Lightning</p>
+      <p class="hero-detail"><strong>Passive:</strong> +10% fire rate</p>
+      <p class="hero-flavor">Enchanted long-barrel rifle. Arcane formulas focus magic into a single devastating piercing bolt.</p>
+    </div>
+    <div class="hero-card" style="border-top:3px solid var(--poison);">
+      <div class="hero-name" style="color:var(--poison);">The Alchemist</div>
+      <div class="hero-class">AoE & debuffs</div>
+      <p class="hero-detail"><strong>Weapon:</strong> Scatter Flask</p>
+      <p class="hero-detail"><strong>Element:</strong> Poison</p>
+      <p class="hero-detail"><strong>Passive:</strong> +12% AoE radius</p>
+      <p class="hero-flavor">Modified blunderbuss that fires unstable flasks. Shatters into volatile shrapnel on impact.</p>
+    </div>
+    <div class="hero-card" style="border-top:3px solid var(--fire);">
+      <div class="hero-name" style="color:var(--fire);">The Bombardier</div>
+      <div class="hero-class">Heavy explosions</div>
+      <p class="hero-detail"><strong>Weapon:</strong> Powder Keg</p>
+      <p class="hero-detail"><strong>Element:</strong> Fire</p>
+      <p class="hero-detail"><strong>Passive:</strong> +15% damage</p>
+      <p class="hero-flavor">Massive iron mortar that drops primed explosive kegs. The fuse burns, then everything goes up.</p>
+    </div>
+    <div class="hero-card" style="border-top:3px solid var(--wind);">
+      <div class="hero-name" style="color:var(--wind);">The Assassin</div>
+      <div class="hero-class">Speed & burst</div>
+      <p class="hero-detail"><strong>Weapon:</strong> Twin Barrels</p>
+      <p class="hero-detail"><strong>Element:</strong> Wind</p>
+      <p class="hero-detail"><strong>Passive:</strong> +15% move speed</p>
+      <p class="hero-flavor">Dual compact pistols with wind vents. Fires both barrels in rapid succession — one-two punch.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== WEAPONS ===== -->
+<section id="weapons">
+  <h2>Weapons</h2>
+
+  <h3>Character Weapons</h3>
+  <p>Each hero starts with a unique weapon. Exclusive — not in the level-up pool.</p>
+  <div class="grid-2">
+    <div class="card" style="border-top:3px solid #44aaff;"><h3 style="color:#44aaff;">Bolt Rifle</h3><p><strong>Wizard</strong> &middot; BEAM</p><p>Pulsed hitscan beam pierces enemies in a line. Long range.</p><p style="font-size:0.7rem;color:var(--accent);">20-40 dmg &middot; 0.8-1.2/s &middot; scales pierce + area</p></div>
+    <div class="card" style="border-top:3px solid #33dd33;"><h3 style="color:#33dd33;">Scatter Flask</h3><p><strong>Alchemist</strong> &middot; BURST</p><p>Flask shatters into 4-8 shrapnel on impact. Chaotic AoE.</p><p style="font-size:0.7rem;color:var(--accent);">14 + 4&times;shrapnel &middot; 0.7-1.0/s</p></div>
+    <div class="card" style="border-top:3px solid #ff4400;"><h3 style="color:#ff4400;">Powder Keg</h3><p><strong>Bombardier</strong> &middot; MINE</p><p>Drops barrel at position. Fuse burns, then massive detonation. Extra kegs thrown in arc.</p><p style="font-size:0.7rem;color:var(--accent);">25-60 dmg &middot; 0.5-0.7/s &middot; 90px radius</p></div>
+    <div class="card" style="border-top:3px solid #aaeeff;"><h3 style="color:#aaeeff;">Twin Barrels</h3><p><strong>Assassin</strong> &middot; BURST-FIRE</p><p>2 rapid shots (0.1s apart). Fast projectiles, quick cooldown.</p><p style="font-size:0.7rem;color:var(--accent);">10-22 &times;2 &middot; 1.2-1.8 bursts/s</p></div>
+  </div>
+
+  <h3>Pool Weapons</h3>
+  <p>Available to all heroes through level-ups. Currently archived — awaiting upgrade rework.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Weapon</th><th>Type</th><th>Damage</th><th>Rate</th><th>Mechanic</th></tr></thead>
+      <tbody>
+        <tr><td><span class="weapon-color" style="background:#c0c0c0;"></span><span class="weapon-name">Bayonet Rush</span></td><td>MELEE</td><td>14-30</td><td>1.2-2.0/s</td><td>Magic-blade. 120&deg; cone sweep.</td></tr>
+        <tr><td><span class="weapon-color" style="background:#ffd94d;"></span><span class="weapon-name">Mortar Burst</span></td><td>AOE</td><td>8-20</td><td>0.5-0.7/s</td><td>Potion shell detonation. 80px radius.</td></tr>
+        <tr><td><span class="weapon-color" style="background:#6699ff;"></span><span class="weapon-name">Arc Discharge</span></td><td>CHAIN</td><td>12-28</td><td>0.8-1.2/s</td><td>Lightning rounds arc. 2-6 chains.</td></tr>
+        <tr><td><span class="weapon-color" style="background:#ff6619;"></span><span class="weapon-name">Ember Shells</span></td><td>ORBIT</td><td>7-15</td><td>&mdash;</td><td>Fire rounds orbit at 180&deg;/s.</td></tr>
+        <tr><td><span class="weapon-color" style="background:#66ff66;"></span><span class="weapon-name">Blight Flask</span></td><td>DOT</td><td>5-13/tick</td><td>0.4-0.6/s</td><td>Poison zone. Ticks 0.5s for 3-5s.</td></tr>
+        <tr><td><span class="weapon-color" style="background:#cc66ff;"></span><span class="weapon-name">Seeker Rounds</span></td><td>BARRAGE</td><td>15-27</td><td>0.4-0.6/s</td><td>Homing bullets. 2-4 per volley.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Transmutations</h3>
+  <p>Weapon at Lv5 + paired passive = auto-transmute.</p>
+  <div class="grid-3">
+    <div class="evo-card"><div class="evo-formula"><span class="evo-base">Bayonet</span><span class="evo-plus">+</span><span class="evo-passive">Gunpowder</span><span class="evo-arrow">&rarr;</span><span class="evo-result" style="color:#e64dff;">Reaper's Bayonet</span></div><div class="evo-stats">360&deg; sweep, 120px, 40 dmg, 2.5/s</div></div>
+    <div class="evo-card"><div class="evo-formula"><span class="evo-base">Mortar</span><span class="evo-plus">+</span><span class="evo-passive">Clockwork</span><span class="evo-arrow">&rarr;</span><span class="evo-result" style="color:#ffff99;">Carpet Bomber</span></div><div class="evo-stats">150px, 30 dmg, 1.5/s, multi-detonation</div></div>
+    <div class="evo-card"><div class="evo-formula"><span class="evo-base">Arc</span><span class="evo-plus">+</span><span class="evo-passive">Birdshot</span><span class="evo-arrow">&rarr;</span><span class="evo-result" style="color:#cce6ff;">Storm Conduit</span></div><div class="evo-stats">8 chains, 180px hop, 25 dmg</div></div>
+    <div class="evo-card"><div class="evo-formula"><span class="evo-base">Ember</span><span class="evo-plus">+</span><span class="evo-passive">Quicksilver</span><span class="evo-arrow">&rarr;</span><span class="evo-result" style="color:#ff3300;">Inferno Ring</span></div><div class="evo-stats">6 orbiters, 90px, 18 dmg, 270&deg;/s</div></div>
+    <div class="evo-card"><div class="evo-formula"><span class="evo-base">Blight</span><span class="evo-plus">+</span><span class="evo-passive">Focus Lens</span><span class="evo-arrow">&rarr;</span><span class="evo-result" style="color:#00e676;">Plague Barrage</span></div><div class="evo-stats">120px, 12/tick, 6s, toxic trail</div></div>
+    <div class="evo-card"><div class="evo-formula"><span class="evo-base">Seeker</span><span class="evo-plus">+</span><span class="evo-passive">Extra Powder</span><span class="evo-arrow">&rarr;</span><span class="evo-result" style="color:#ff4081;">Bullet Storm</span></div><div class="evo-stats">6 seekers, 60px splash, screen-wide</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== ELEMENTS ===== -->
+<section id="elements">
+  <h2>Elemental Affinities</h2>
+  <p>One active at a time. Modifies ALL equipped weapons.</p>
+  <div class="grid-4">
+    <div class="element-card" style="border-top:3px solid var(--fire);"><div class="element-name" style="color:var(--fire);">Fire</div><div class="element-stat">Dmg: -15% &middot; Rate: +25%</div><div class="element-effect">Attacks apply <strong>burn DoT</strong> &mdash; 3/s for 3s</div></div>
+    <div class="element-card" style="border-top:3px solid var(--earth);"><div class="element-name" style="color:var(--earth);">Earth</div><div class="element-stat">Dmg: +25% &middot; Rate: -20%</div><div class="element-effect">Projectiles <strong>+30% larger</strong>, AoE <strong>+20%</strong></div></div>
+    <div class="element-card" style="border-top:3px solid var(--lightning);"><div class="element-name" style="color:var(--lightning);">Lightning</div><div class="element-stat">Dmg: -10% &middot; Rate: +15%</div><div class="element-effect">Pierce <strong>+2</strong>, chain hop <strong>+40px</strong></div></div>
+    <div class="element-card" style="border-top:3px solid var(--wind);"><div class="element-name" style="color:var(--wind);">Wind</div><div class="element-stat">Dmg: -25% &middot; Rate: +40%</div><div class="element-effect">Speed <strong>+20%</strong>. <strong>Suffocate</strong> &mdash; halves healing</div></div>
+    <div class="element-card" style="border-top:3px solid var(--poison);"><div class="element-name" style="color:var(--poison);">Poison</div><div class="element-stat">Dmg: -20%</div><div class="element-effect">Poison DoT &mdash; 5/s for 4s, <strong>stacks</strong></div></div>
+    <div class="element-card" style="border-top:3px solid var(--void);"><div class="element-name" style="color:var(--void);">Void</div><div class="element-stat">Dmg: -30% &middot; Rate: -15%</div><div class="element-effect"><strong>Reduces max HP</strong> instead of current. Returns after 5s</div></div>
+    <div class="element-card" style="border-top:3px solid var(--light);"><div class="element-name" style="color:var(--light);">Light</div><div class="element-stat">Dmg: -10%</div><div class="element-effect">Projectiles <strong>2x faster</strong>, reload <strong>+30%</strong></div></div>
+  </div>
+
+  <h3>Weapon &times; Element Matrix</h3>
+  <p>Special interactions (stretch goals).</p>
+  <div class="table-wrap">
+    <table class="matrix">
+      <thead><tr><th></th><th style="color:var(--fire);">Fire</th><th style="color:var(--earth);">Earth</th><th style="color:var(--lightning);">Ltn.</th><th style="color:var(--wind);">Wind</th><th style="color:var(--poison);">Psn.</th><th style="color:var(--void);">Void</th><th style="color:var(--light);">Light</th></tr></thead>
+      <tbody>
+        <tr><td style="color:#44aaff;">Bolt Rifle</td><td>&mdash;</td><td>&mdash;</td><td class="special">fork</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td class="special">trail</td></tr>
+        <tr><td style="color:#33dd33;">Scatter Flask</td><td>&mdash;</td><td class="special">slow zone</td><td>&mdash;</td><td>&mdash;</td><td class="special">DOT shrapnel</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td style="color:#ff4400;">Powder Keg</td><td class="special">fire ground</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td class="special">vacuum</td><td>&mdash;</td></tr>
+        <tr><td style="color:#aaeeff;">Twin Barrels</td><td>&mdash;</td><td>&mdash;</td><td class="special">chain shot</td><td class="special">triple-tap</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Bayonet</td><td class="special">burn trail</td><td>&mdash;</td><td>&mdash;</td><td class="special">knockback</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Mortar</td><td>&mdash;</td><td class="special">huge radius</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td class="special">vacuum</td><td>&mdash;</td></tr>
+        <tr><td>Arc</td><td>&mdash;</td><td>&mdash;</td><td class="special">2x chains</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td class="special">instant</td></tr>
+        <tr><td>Ember</td><td class="special">fire trails</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td class="special">poison wake</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Blight</td><td>&mdash;</td><td class="special">slow zone</td><td>&mdash;</td><td>&mdash;</td><td class="special">2x poison</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Seeker</td><td>&mdash;</td><td>&mdash;</td><td class="special">chain splash</td><td>&mdash;</td><td>&mdash;</td><td class="special">singularity</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== PASSIVES ===== -->
+<section id="passives">
+  <h2>Passives</h2>
+  <p style="color:var(--accent);font-size:0.72rem;">Passive acquisition system currently under rework.</p>
+  <div class="passive-grid">
+    <div class="passive-chip"><div class="passive-dot" style="background:#33cc33;"></div><div><div class="passive-name">Gunpowder</div><div class="passive-desc">+10% dmg/lv</div><div class="passive-max">Max: +50%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#996633;"></div><div><div class="passive-name">Clockwork</div><div class="passive-desc">+8% atk speed/lv</div><div class="passive-max">Max: +40%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#cc9933;"></div><div><div class="passive-name">Quicksilver</div><div class="passive-desc">+10% proj speed/lv</div><div class="passive-max">Max: +50%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#66ccff;"></div><div><div class="passive-name">Birdshot</div><div class="passive-desc">+1 pierce/lv</div><div class="passive-max">Max: +5</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#b3e6ff;"></div><div><div class="passive-name">Wind Vents</div><div class="passive-desc">+8% speed/lv</div><div class="passive-max">Max: +40%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#8033cc;"></div><div><div class="passive-name">Lodestone</div><div class="passive-desc">+15% pickup/lv</div><div class="passive-max">Max: +75%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#ffab40;"></div><div><div class="passive-name">Focusing Lens</div><div class="passive-desc">+8% AoE/lv</div><div class="passive-max">Max: +40%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#7cb342;"></div><div><div class="passive-name">Extra Powder</div><div class="passive-desc">+1 proj/lv</div><div class="passive-max">Max: +5</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== COMBAT ===== -->
+<section id="combat">
+  <h2>Combat</h2>
+
+  <h3>Alchemical Blink (Dash)</h3>
+  <p><strong>Space</strong> / bumper. Brief alchemical dissolve, reappear ahead. I-frames on first 0.08s. Afterimage trail.</p>
+  <div class="table-wrap">
+    <table><thead><tr><th>Stat</th><th>Value</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="weapon-name">Distance</td><td>100px</td><td>~2x character width</td></tr>
+      <tr><td class="weapon-name">Duration</td><td>0.12s</td><td>Near-instant</td></tr>
+      <tr><td class="weapon-name">Cooldown</td><td>2.0s</td><td>Rewards timing</td></tr>
+      <tr><td class="weapon-name">I-Frames</td><td>0.08s</td><td>Dash through attacks</td></tr>
+    </tbody></table>
+  </div>
+  <h3>Hero Dash Variants</h3>
+  <div class="grid-2">
+    <div class="card" style="border-top:3px solid var(--lightning);"><h3 style="color:var(--lightning);">Arc Step</h3><p><strong>Wizard</strong> &mdash; Lightning trail damages enemies passed through (5 dmg)</p></div>
+    <div class="card" style="border-top:3px solid var(--poison);"><h3 style="color:var(--poison);">Caustic Roll</h3><p><strong>Alchemist</strong> &mdash; Drops a small poison puddle at start position</p></div>
+    <div class="card" style="border-top:3px solid var(--fire);"><h3 style="color:var(--fire);">Blast Jump</h3><p><strong>Bombardier</strong> &mdash; Knockback on enemies near start position</p></div>
+    <div class="card" style="border-top:3px solid var(--wind);"><h3 style="color:var(--wind);">Smoke Dash</h3><p><strong>Assassin</strong> &mdash; 30% longer distance (130px). Pure speed</p></div>
+  </div>
+
+  <h3>Enemies (Planned)</h3>
+  <div class="grid-3">
+    <div class="card"><h3>Husks</h3><p>Shambling magic-warped creatures.</p><span class="tag" style="color:var(--muted);">Base</span></div>
+    <div class="card"><h3>Ironclads</h3><p>Alchemically hardened. Slow, high HP.</p><span class="tag" style="color:var(--earth);">Tank</span></div>
+    <div class="card"><h3>Wisps</h3><p>Fast, fragile. Swarms of 8-10.</p><span class="tag" style="color:var(--wind);">Swarmer</span></div>
+    <div class="card"><h3>Hexborn</h3><p>Ranged. Unstable magic bolts.</p><span class="tag" style="color:var(--void);">Ranged</span></div>
+    <div class="card"><h3>Splitters</h3><p>Burst into 2-3 Wisps on death.</p><span class="tag" style="color:var(--poison);">Splitting</span></div>
+  </div>
+
+  <h3>Bosses & Elites</h3>
+  <p>Elites spawn from 3:00+. Bosses at 5:00 and 10:00.</p>
+  <h4 style="font-size:0.8rem;color:var(--accent);margin-top:0.8rem;">Elite Types</h4>
+  <p>5x HP, 1.5x size, 10x XP. Each adds one mechanic.</p>
+  <div class="grid-2">
+    <div class="card"><h3 style="color:#ffd94d;">Shielded</h3><p>50% DR from front. Must flank or use AoE.</p><span class="tag" style="color:#ffd94d;">Gold glow</span></div>
+    <div class="card"><h3 style="color:var(--fire);">Volatile</h3><p>Explodes on death &mdash; 80px radius, 15 dmg.</p><span class="tag" style="color:var(--fire);">Pulsing red</span></div>
+    <div class="card"><h3 style="color:var(--poison);">Spawner</h3><p>Spawns 2 Wisps every 3s while alive.</p><span class="tag" style="color:var(--poison);">Green trail</span></div>
+    <div class="card"><h3 style="color:var(--void);">Magnetic</h3><p>Pulls XP gems toward itself. Steals your experience.</p><span class="tag" style="color:var(--void);">Purple vortex</span></div>
+  </div>
+  <h4 style="font-size:0.8rem;color:var(--accent);margin-top:1rem;">Boss Encounters</h4>
+  <div class="grid-2">
+    <div class="hero-card" style="border-top:3px solid var(--earth);">
+      <div class="hero-name" style="color:var(--earth);">The Iron Warden</div>
+      <div class="hero-class">5:00 &mdash; Slow, armored, summons minions</div>
+      <p class="hero-detail"><strong>HP:</strong> 800 + (kills &times; 0.5)</p>
+      <p class="hero-detail"><strong>Ground Slam:</strong> 120px AoE, spawns 4 Ironclads</p>
+      <p class="hero-detail"><strong>Shield Wall:</strong> 75% DR for 3s, minions speed +50%</p>
+      <p class="hero-detail"><strong>Charge:</strong> Dash at 200 speed, leaves damage trail</p>
+      <p class="hero-flavor">Drop: Lodestone Pulse + 200 XP</p>
+    </div>
+    <div class="hero-card" style="border-top:3px solid var(--lightning);">
+      <div class="hero-name" style="color:var(--lightning);">The Storm Weaver</div>
+      <div class="hero-class">10:00 &mdash; Fast, erratic, area denial</div>
+      <p class="hero-detail"><strong>HP:</strong> 1500 + (kills &times; 0.5)</p>
+      <p class="hero-detail"><strong>Wisp Burst:</strong> Spawns 8 Wisps in a ring</p>
+      <p class="hero-detail"><strong>Lightning Trail:</strong> Zigzag dash, damaging zones</p>
+      <p class="hero-detail"><strong>Static Field:</strong> 200px pushback pulse, 15 dmg + stun</p>
+      <p class="hero-flavor">Drop: Lodestone Pulse + 400 XP + free level-up</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== ARENA ===== -->
+<section id="arena">
+  <h2>Arena Features</h2>
+  <p>Interactive elements in the arena. Reasons to move beyond dodging.</p>
+  <h3>Breakable Crates</h3>
+  <p>8-12 on map. 15 HP. Respawn 15-20s after destroyed.</p>
+  <div class="grid-4">
+    <div class="card"><h3>60%</h3><p>XP cluster (3-5 gems)</p></div>
+    <div class="card"><h3>20%</h3><p>Heal pickup</p></div>
+    <div class="card"><h3>15%</h3><p>Lodestone Pulse</p></div>
+    <div class="card"><h3>5%</h3><p>Arcane Dust (+5)</p></div>
+  </div>
+  <h3>Alchemical Braziers</h3>
+  <p>2 active at once. Walk into to consume. Respawn elsewhere after 45s.</p>
+  <div class="grid-3">
+    <div class="card" style="border-top:3px solid var(--wind);"><h3 style="color:var(--wind);">Speed Brazier</h3><p>+30% move speed for 8s</p></div>
+    <div class="card" style="border-top:3px solid var(--fire);"><h3 style="color:var(--fire);">Power Brazier</h3><p>+20% damage for 8s</p></div>
+    <div class="card" style="border-top:3px solid #ffd94d;"><h3 style="color:#ffd94d;">Shield Brazier</h3><p>Block next hit (up to 15s)</p></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== PROGRESSION ===== -->
+<section id="progression">
+  <h2>Progression</h2>
+
+  <h3>The Forge &mdash; Meta Progression</h3>
+  <p>Permanent upgrades with <strong>Arcane Dust</strong>. Makes every run matter, even losses.</p>
+  <div class="table-wrap">
+    <table><thead><tr><th>Source</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td class="weapon-name">Base (per run)</td><td>10</td></tr>
+      <tr><td class="weapon-name">Per minute survived</td><td>5</td></tr>
+      <tr><td class="weapon-name">Per 100 enemies killed</td><td>3</td></tr>
+      <tr><td class="weapon-name">Per boss defeated</td><td>25</td></tr>
+      <tr><td class="weapon-name">Victory bonus</td><td>50</td></tr>
+      <tr><td class="weapon-name">First victory (per hero)</td><td>100</td></tr>
+    </tbody></table>
+  </div>
+  <h3>Forge Enhancements</h3>
+  <p>5 levels each. Apply to ALL future runs.</p>
+  <div class="passive-grid">
+    <div class="passive-chip"><div class="passive-dot" style="background:var(--fire);"></div><div><div class="passive-name">Tempered Barrels</div><div class="passive-desc">+5% damage/lv</div><div class="passive-max">Max: +25%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#996633;"></div><div><div class="passive-name">Oiled Mechanisms</div><div class="passive-desc">+4% fire rate/lv</div><div class="passive-max">Max: +20%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:#33cc33;"></div><div><div class="passive-name">Alchemist's Vigor</div><div class="passive-desc">+10 max HP/lv</div><div class="passive-max">Max: +50 HP</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:var(--wind);"></div><div><div class="passive-name">Swift Boots</div><div class="passive-desc">+4% move speed/lv</div><div class="passive-max">Max: +20%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:var(--void);"></div><div><div class="passive-name">Magnetic Core</div><div class="passive-desc">+10% pickup range/lv</div><div class="passive-max">Max: +50%</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:var(--accent);"></div><div><div class="passive-name">Lucky Loadout</div><div class="passive-desc">+1 reroll/lv</div><div class="passive-max">Max: +5</div></div></div>
+    <div class="passive-chip"><div class="passive-dot" style="background:var(--lightning);"></div><div><div class="passive-name">XP Attunement</div><div class="passive-desc">+5% XP gain/lv</div><div class="passive-max">Max: +25%</div></div></div>
+  </div>
+  <h3>Achievement Unlocks</h3>
+  <div class="grid-3">
+    <div class="card"><h3>Pool Weapons</h3><p>Complete 1 run with each hero &rarr; un-archives all 6 pool weapons</p></div>
+    <div class="card"><h3>Weapon Talents</h3><p>Max character weapon 3 times &rarr; talent upgrades in pool</p></div>
+    <div class="card"><h3>Hard Mode</h3><p>Win with any character &rarr; 1.5x difficulty, 1.5x Dust</p></div>
+    <div class="card"><h3>Elemental Mastery</h3><p>Win with each element &rarr; dual-element attunement</p></div>
+    <div class="card"><h3>Alchemist's Journal</h3><p>Kill 1000 enemies &rarr; per-weapon stats in end screen</p></div>
+    <div class="card"><h3>True Ending</h3><p>Beat Storm Weaver on Hard &rarr; 20-min run + third boss</p></div>
+  </div>
+
+  <h3>End-of-Run Stats</h3>
+  <div class="grid-3">
+    <div class="card"><h3>Summary</h3><p>Time, level, kills, total damage, bosses defeated.</p><span class="tag">Default tab</span></div>
+    <div class="card"><h3>Weapons</h3><p>Per-weapon damage bar chart. Ranked. Color-coded.</p><span class="tag" style="color:var(--accent);">Key feature</span></div>
+    <div class="card"><h3>Build</h3><p>Full loadout: weapons, passives, element. Stat contribution.</p><span class="tag">Detail view</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== TECHNICAL ===== -->
+<section id="technical">
+  <h2>Technical</h2>
+
+  <h3>Audio Design</h3>
+  <div class="grid-2">
+    <div class="card"><h3>Pitch Ramping</h3><p>XP pickups in rapid succession play at ascending pitch. +1 semitone per pickup, cap at +8. Reset after 0.5s gap.</p></div>
+    <div class="card"><h3>Kill Variants</h3><p>3-4 death sound variants per enemy type. Random selection prevents fatigue.</p></div>
+    <div class="card"><h3>Overkill Feedback</h3><p>3x+ overkill &rarr; beefier death sound. Lower pitch, louder. Transmuted weapons feel devastating.</p></div>
+    <div class="card"><h3>Per-Weapon SFX</h3><p>Each weapon type gets unique fire + hit sounds. No shared sfx_shoot.</p></div>
+  </div>
+
+  <h3>VFX Clarity System</h3>
+  <div class="table-wrap">
+    <table><thead><tr><th>Priority</th><th>Examples</th><th>At Budget Cap</th></tr></thead>
+    <tbody>
+      <tr><td class="weapon-name">Critical</td><td>Player, boss, HP bars, HUD</td><td>Never culled</td></tr>
+      <tr><td class="weapon-name">High</td><td>Projectiles, dash trail, boss attacks</td><td>Particle count -50%</td></tr>
+      <tr><td class="weapon-name">Medium</td><td>Impact effects, death bursts</td><td>Skipped entirely</td></tr>
+      <tr><td class="weapon-name">Low</td><td>Ambient particles, orbiter trails</td><td>First to cull</td></tr>
+    </tbody></table>
+  </div>
+  <p>Budget cap: <strong>150 active GPUParticles2D emitters</strong>. Z-index: ground(0) &rarr; pickups(5) &rarr; enemies(10) &rarr; player(15) &rarr; projectiles(20) &rarr; UI(100).</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== ROADMAP ===== -->
+<section id="roadmap">
+  <h2>Roadmap</h2>
+  <ul class="roadmap-list">
+    <li class="roadmap-item"><span class="roadmap-status status-done">Done</span><div><div class="roadmap-name">A1-A3a: Core + Weapons</div><div class="roadmap-desc">6 weapons, 8 passives, 6 evolutions, 17-bug audit</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-partial">Partial</span><div><div class="roadmap-name">A3b: UI + VFX</div><div class="roadmap-desc">Kenney UI (~40%), base weapon VFX (6/6)</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-done">Done</span><div><div class="roadmap-name">R1: Re-Theme</div><div class="roadmap-desc">Renamed all assets to M&P theming</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-done">Done</span><div><div class="roadmap-name">R2: Character Select</div><div class="roadmap-desc">4 heroes with starting loadouts</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span><div><div class="roadmap-name">R3: Elemental Affinities</div><div class="roadmap-desc">7 elements as weapon modifiers</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span><div><div class="roadmap-name">A3c: Movement & Arena</div><div class="roadmap-desc">Dodge/dash, breakable crates, alchemical braziers</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span><div><div class="roadmap-name">A3d: Bosses & Elites</div><div class="roadmap-desc">4 elite types, Iron Warden, Storm Weaver</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span><div><div class="roadmap-name">A3e: Audio Overhaul</div><div class="roadmap-desc">Per-weapon SFX, pitch ramping, kill variants</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span><div><div class="roadmap-name">A4: Stats & Balance</div><div class="roadmap-desc">End-of-run stats, per-weapon DPS tracking</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-planned">Planned</span><div><div class="roadmap-name">A5: VFX Clarity</div><div class="roadmap-desc">Particle budget system, z-index layering</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-future">Future</span><div><div class="roadmap-name">B1: Art & Effects</div><div class="roadmap-desc">Pixel art, entity sprites, evolution VFX</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-future">Future</span><div><div class="roadmap-name">B2: Meta Progression (The Forge)</div><div class="roadmap-desc">Arcane Dust, permanent upgrades, achievements</div></div></li>
+    <li class="roadmap-item"><span class="roadmap-status status-future">Future</span><div><div class="roadmap-name">B3: Maps & Variants</div><div class="roadmap-desc">Multiple arenas, environmental hazards</div></div></li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== RESEARCH ===== -->
+<section id="research">
+  <h2>Survivor-Like Systems Research</h2>
+  <p>Comparative analysis of upgrade, progression, and meta systems across the genre. Click to expand.</p>
+
+  <div class="game-accord" data-game="vs">
+    <div class="game-accord-header"><div><div class="game-accord-title">Vampire Survivors</div><div class="game-stat-row"><div class="game-stat"><strong>Weapons:</strong> 6</div><div class="game-stat"><strong>Passives:</strong> 6</div><div class="game-stat"><strong>Max Lv:</strong> 8</div><div class="game-stat"><strong>Evo:</strong> Wep+Pas+Chest</div></div></div><div class="game-accord-arrow">&#9660;</div></div>
+    <div class="game-accord-body"><div class="game-accord-content">
+      <p><strong>Level-up:</strong> 3-4 choices from combined weapon + passive pool. <strong>Reroll</strong>, <strong>Banish</strong>, and <strong>Skip</strong> (limited uses, upgradeable via meta).</p>
+      <p><strong>Characters:</strong> 50+ characters, each with exclusive starting weapon + stat bonuses (e.g., Antonio: Whip + 20% Might).</p>
+      <p><strong>Evolution:</strong> Weapon at Lv8 + specific Passive at any level + open Treasure Chest = evolved weapon. Passive is kept.</p>
+      <p><strong>Meta (PowerUps):</strong> Gold spent on permanent stat boosts: Might, Armor, Max HP, Recovery, Cooldown, Area, Speed, Duration, Amount, MoveSpeed, Growth, Greed, Luck, Reroll/Banish/Skip uses.</p>
+      <p><strong>Arcanas:</strong> 22 run modifiers selected at start and at 11-min intervals. Fundamentally change mechanics.</p>
+      <p><strong>Stats:</strong> Might, Armor, Max HP, Recovery, Cooldown, Area, Speed, Duration, Amount, MoveSpeed, Luck, Growth, Greed, Curse, Magnet, Revival.</p>
+    </div></div>
+  </div>
+
+  <div class="game-accord" data-game="hc">
+    <div class="game-accord-header"><div><div class="game-accord-title">HoloCure</div><div class="game-stat-row"><div class="game-stat"><strong>Weapons:</strong> 6</div><div class="game-stat"><strong>Stamps:</strong> 6</div><div class="game-stat"><strong>Max Lv:</strong> 7</div><div class="game-stat"><strong>Evo:</strong> Wep+Stamp+Chest</div></div></div><div class="game-accord-arrow">&#9660;</div></div>
+    <div class="game-accord-body"><div class="game-accord-content">
+      <p><strong>Level-up:</strong> 3-4 choices (4 with meta upgrade). Same pool mechanics as VS.</p>
+      <p><strong>Characters:</strong> 50+ with exclusive starting weapon + Special Attack (active ability on ~30-60s cooldown).</p>
+      <p><strong>Collab:</strong> Weapon Lv7 + Stamp Lv7 + Collab Chest. Stamp is consumed, freeing a slot.</p>
+      <p><strong>Meta:</strong> HoloCoins for stat upgrades (10 levels each), Enhanced Level-Up (4 choices), Starting Weapon Level, GachaPon (cosmetics).</p>
+      <p><strong>Unique:</strong> Special Attacks add skill expression. Super Collabs (two collabs merge) for endgame power.</p>
+      <p><strong>Stats:</strong> HP, ATK, SPD, CRT, Haste, Move Speed, Pickup Range, HP Regen, Knockback, Size, EXP Bonus.</p>
+    </div></div>
+  </div>
+
+  <div class="game-accord" data-game="sio">
+    <div class="game-accord-header"><div><div class="game-accord-title">Survivor.io</div><div class="game-stat-row"><div class="game-stat"><strong>Weapons:</strong> ~6</div><div class="game-stat"><strong>Passives:</strong> ~6</div><div class="game-stat"><strong>Evo:</strong> Auto-merge</div><div class="game-stat"><strong>Platform:</strong> Mobile</div></div></div><div class="game-accord-arrow">&#9660;</div></div>
+    <div class="game-accord-body"><div class="game-accord-content">
+      <p><strong>Level-up:</strong> 3 choices. Heavily weighted toward active skill upgrades.</p>
+      <p><strong>Evolution:</strong> Two specific skills at max level auto-merge. No chest trigger needed.</p>
+      <p><strong>Equipment:</strong> Permanent gear with rarity tiers (Common &rarr; Mythic). Provides persistent stat bonuses.</p>
+      <p><strong>Meta:</strong> Equipment upgrading + Talent tree + Hero levels + Multiple currencies (gold, gems, materials).</p>
+      <p><strong>Key differentiator:</strong> Mobile-first, auto-aim, simplified controls. Equipment is semi-permanent meta gear.</p>
+    </div></div>
+  </div>
+
+  <div class="game-accord" data-game="bro">
+    <div class="game-accord-header"><div><div class="game-accord-title">Brotato</div><div class="game-stat-row"><div class="game-stat"><strong>Weapons:</strong> 6</div><div class="game-stat"><strong>Passives:</strong> Unlimited</div><div class="game-stat"><strong>Evo:</strong> None</div><div class="game-stat"><strong>Upgrades:</strong> Shop</div></div></div><div class="game-accord-arrow">&#9660;</div></div>
+    <div class="game-accord-body"><div class="game-accord-content">
+      <p><strong>UNIQUE: Shop-based.</strong> Buy weapons and items from a shop between waves. No randomized level-up choices.</p>
+      <p><strong>Can buy duplicates</strong> &mdash; stack 6 shotguns! Reroll shop costs gold (increasing).</p>
+      <p><strong>40+ characters</strong> with unique passives that fundamentally change playstyle.</p>
+      <p><strong>Wave-based:</strong> 20 waves of escalating enemies. Gold economy is central.</p>
+      <p><strong>Meta:</strong> Character unlocks and Danger levels only. No permanent stat upgrades.</p>
+      <p><strong>Stats:</strong> HP, Regen, Life Steal, Damage, Melee/Ranged/Elemental Damage, Attack Speed, Crit, Engineering, Range, Armor, Dodge, Speed, Luck, Harvesting.</p>
+    </div></div>
+  </div>
+
+  <div class="game-accord" data-game="20mtd">
+    <div class="game-accord-header"><div><div class="game-accord-title">20 Minutes Till Dawn</div><div class="game-stat-row"><div class="game-stat"><strong>Weapons:</strong> 1</div><div class="game-stat"><strong>Passives:</strong> Skill tree</div><div class="game-stat"><strong>Evo:</strong> None</div></div></div><div class="game-accord-arrow">&#9660;</div></div>
+    <div class="game-accord-body"><div class="game-accord-content">
+      <p><strong>Choose 1 weapon at start</strong> from ~10 options (Shotgun, Revolver, Dual SMGs, etc.).</p>
+      <p><strong>Level-up:</strong> 3 choices from a branching <strong>skill tree</strong>. Categories: Bullet, Fire, Ice, Lightning, Dark, Summoner, General.</p>
+      <p><strong>No passive items</strong> &mdash; everything is skill nodes. Creates deep build paths: "fire shotgun" vs "ice sniper" vs "summon army".</p>
+      <p><strong>Meta:</strong> Character/weapon unlocks + Rune system. No permanent stat upgrades.</p>
+    </div></div>
+  </div>
+
+  <div class="game-accord" data-game="hot">
+    <div class="game-accord-header"><div><div class="game-accord-title">Halls of Torment</div><div class="game-stat-row"><div class="game-stat"><strong>Abilities:</strong> 5</div><div class="game-stat"><strong>Traits:</strong> Unlimited</div><div class="game-stat"><strong>Meta:</strong> Quests + Blessings</div></div></div><div class="game-accord-arrow">&#9660;</div></div>
+    <div class="game-accord-body"><div class="game-accord-content">
+      <p><strong>Level-up:</strong> 3 choices mixing abilities and traits. Trait dependency chains (must pick A before B unlocks).</p>
+      <p><strong>Quest-based meta:</strong> "Kill 1000 skeletons" unlocks new abilities. Goal-oriented progression.</p>
+      <p><strong>Blessings:</strong> Permanent stat upgrades purchased between runs, gated behind quest completion.</p>
+    </div></div>
+  </div>
+
+  <div class="game-accord" data-game="ror2">
+    <div class="game-accord-header"><div><div class="game-accord-title">Risk of Rain 2</div><div class="game-stat-row"><div class="game-stat"><strong>Items:</strong> Unlimited</div><div class="game-stat"><strong>Equipment:</strong> 1</div><div class="game-stat"><strong>Key:</strong> Stacking</div></div></div><div class="game-accord-arrow">&#9660;</div></div>
+    <div class="game-accord-body"><div class="game-accord-content">
+      <p><strong>Items stack.</strong> Picking up a second Soldier's Syringe gives double the attack speed. No caps.</p>
+      <p><strong>No level-up choices</strong> &mdash; items from chests and drops. Rarity tiers: White, Green, Red, Yellow, Lunar, Equipment.</p>
+      <p><strong>Difficulty scales with time.</strong> Speed vs power tension &mdash; risk spending time looting vs rushing boss.</p>
+      <p><strong>Characters:</strong> ~14 Survivors with 4 active abilities each. Alt skills unlocked via challenges.</p>
+      <p><strong>Meta:</strong> Character unlocks, Alternate skills, Artifacts (run modifiers), Lunar Coins.</p>
+    </div></div>
+  </div>
+
+  <div class="game-accord" data-game="hades">
+    <div class="game-accord-header"><div><div class="game-accord-title">Hades</div><div class="game-stat-row"><div class="game-stat"><strong>Weapons:</strong> 6&times;4 aspects</div><div class="game-stat"><strong>Boons:</strong> Slot-based</div><div class="game-stat"><strong>Meta:</strong> Mirror + Keepsakes</div></div></div><div class="game-accord-arrow">&#9660;</div></div>
+    <div class="game-accord-body"><div class="game-accord-content">
+      <p><strong>Boons</strong> from Olympian gods modify specific slots (attack, special, cast, dash, call). Duo Boons require two gods.</p>
+      <p><strong>Daedalus Hammer:</strong> 2 per run, fundamentally change weapon behavior ("your attack now fires 3 shots").</p>
+      <p><strong>Mirror of Night:</strong> 24 dual-choice permanent passives. Meaningful meta decisions.</p>
+      <p><strong>Keepsakes:</strong> 1 equipped passive, swappable between biomes. Upgraded by repeated use.</p>
+      <p><strong>Room choice:</strong> Pick which reward to pursue each room. Rich narrative integration.</p>
+    </div></div>
+  </div>
+
+  <h3 style="margin-top:2rem;">Cross-Game Comparison</h3>
+  <div class="table-wrap">
+    <table class="matrix" style="font-size:0.65rem;">
+      <thead><tr><th>Feature</th><th>VS</th><th>HC</th><th>S.io</th><th>Brotato</th><th>20MTD</th><th>HoT</th><th>RoR2</th><th>Hades</th></tr></thead>
+      <tbody>
+        <tr><td>Weapon Slots</td><td>6</td><td>6</td><td>~6</td><td>6</td><td>1</td><td>5</td><td>&infin;</td><td>1</td></tr>
+        <tr><td>Passive Slots</td><td>6</td><td>6</td><td>~6</td><td>&infin;</td><td>Tree</td><td>&infin;</td><td>&infin;</td><td>1</td></tr>
+        <tr><td>Weapon Max Lv</td><td>8</td><td>7</td><td>Varies</td><td>Tiers</td><td>Auto</td><td>5</td><td>N/A</td><td>N/A</td></tr>
+        <tr><td>Evolution</td><td class="special">W+P+Chest</td><td class="special">W+S+Chest</td><td>Auto</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Aspects</td></tr>
+        <tr><td>Level-Up Choices</td><td>3-4</td><td>3-4</td><td>3</td><td>Shop(4)</td><td>3(tree)</td><td>3</td><td>N/A</td><td>Room</td></tr>
+        <tr><td>Reroll</td><td class="special">Yes</td><td>&mdash;</td><td>&mdash;</td><td class="special">Yes($)</td><td class="special">Yes</td><td>&mdash;</td><td>&mdash;</td><td class="special">Yes</td></tr>
+        <tr><td>Banish</td><td class="special">Yes</td><td>&mdash;</td><td>&mdash;</td><td>Sell</td><td>&mdash;</td><td>&mdash;</td><td>Scrap</td><td>&mdash;</td></tr>
+        <tr><td>Char Weapon</td><td class="special">Excl.</td><td class="special">Excl.</td><td>&mdash;</td><td>&mdash;</td><td>Choose</td><td class="special">Yes</td><td>4 skills</td><td>Choose</td></tr>
+        <tr><td>Meta Stats</td><td class="special">Gold</td><td class="special">Coins</td><td class="special">Equip</td><td>&mdash;</td><td>&mdash;</td><td class="special">Bless</td><td>&mdash;</td><td class="special">Mirror</td></tr>
+        <tr><td>Run Duration</td><td>30m</td><td>20m</td><td>~10m</td><td>20 waves</td><td>20m</td><td>~15m</td><td>Varies</td><td>~30m</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin-top:2rem;">Key Patterns</h3>
+  <div class="grid-2">
+    <div class="pattern-card"><h4>6+6 Slot Model</h4><p>Standard across the genre. Creates meaningful build tension: new weapon vs upgrade vs passive.</p></div>
+    <div class="pattern-card"><h4>Evolution as Build Puzzle</h4><p>Players plan backward from desired combos. The chest trigger adds a moment of payoff.</p></div>
+    <div class="pattern-card"><h4>Three Tiers of Progression</h4><p><strong>In-Run</strong> (resets) / <strong>Meta</strong> (permanent stats) / <strong>Unlocks</strong> (one-time). Every game has all three.</p></div>
+    <div class="pattern-card"><h4>Skill Expression vs RNG</h4><p>Reroll, Banish, Skip, Shop. The best games give players tools to fight bad luck.</p></div>
+    <div class="pattern-card"><h4>Character Identity</h4><p>Exclusive weapon + stat bonus + unique ability. M&P already does exclusive weapons.</p></div>
+    <div class="pattern-card"><h4>Passive Acquisition</h4><p>6 approaches: Level-up pool (VS), Shop (Brotato), Skill tree (20MTD), Drops (RoR2), Quests (HoT), Equipment (S.io).</p></div>
+  </div>
+</section>
+
+<div class="wiki-footer">Mortar and Pistol &mdash; axogames.dev</div>
+
+</div>
+
+<script>
+// Sidebar toggle
+(function(){
+  const hamburger=document.getElementById('hamburger'),sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
+  function toggle(){sidebar.classList.toggle('open');overlay.classList.toggle('show');hamburger.classList.toggle('open');}
+  hamburger.addEventListener('click',toggle);
+  overlay.addEventListener('click',toggle);
+  sidebar.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',()=>{if(window.innerWidth<=768)toggle();}));
+})();
+
+// Active nav on scroll
+(function(){
+  const sections=document.querySelectorAll('section[id]');
+  const links=document.querySelectorAll('.nav-link');
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const active=document.querySelector('.nav-link[href="#'+e.target.id+'"]');
+        if(active)active.classList.add('active');
+      }
+    });
+  },{rootMargin:'-20% 0px -70% 0px'});
+  sections.forEach(s=>obs.observe(s));
+})();
+
+// Accordion
+document.querySelectorAll('.game-accord-header').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('open'));
+});
+</script>
+</body>
+</html>
