@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>M&P Workshop V2 — Follow-Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a12;
+      --card: #14131e;
+      --border: #2a2840;
+      --gold: #d4a843;
+      --text: #e0dde8;
+      --muted: #8884a0;
+      --green: #2ecc71;
+      --red: #e74c3c;
+      --blue: #3498db;
+      --accent: #c44dff;
+      --accent2: #ff6b9d;
+      --accent3: #4dccff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      padding-bottom: 100px;
+    }
+
+    h1 { color: var(--gold); font-size: 1.5rem; text-align: center; margin-bottom: 4px; font-weight: 800; }
+    .subtitle { color: var(--muted); font-size: 0.8rem; text-align: center; margin-bottom: 8px; }
+
+    .progress { text-align: center; color: var(--muted); font-size: 0.78rem; margin-bottom: 14px; }
+    .progress .count { color: var(--gold); font-weight: 700; }
+
+    .context-box {
+      background: #1a1930;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .context-box strong { color: var(--accent3); }
+    .context-box .your-answer { color: var(--gold); font-weight: 600; }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .section-title { color: var(--gold); font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .question { margin-bottom: 20px; }
+    .question:last-child { margin-bottom: 0; }
+
+    .q-label { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; line-height: 1.5; }
+    .q-label .q-num { color: var(--gold); font-weight: 700; }
+
+    .options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+
+    .opt-btn {
+      background: #1c1b2e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.3;
+    }
+
+    .opt-btn:hover { border-color: var(--gold); }
+    .opt-btn.selected { background: #1f1e35; border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+    .opt-btn .opt-label { font-weight: 600; }
+    .opt-btn .opt-desc { color: var(--muted); font-size: 0.75rem; display: block; margin-top: 2px; }
+
+    .text-input {
+      width: 100%;
+      background: #1c1b2e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+      resize: vertical;
+      min-height: 50px;
+      outline: none;
+      margin-top: 6px;
+    }
+
+    .text-input:focus { border-color: var(--gold); }
+    .text-input::placeholder { color: #555; }
+
+    .text-label { font-size: 0.7rem; color: var(--muted); margin-top: 6px; display: block; }
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex; gap: 8px; z-index: 100;
+    }
+
+    .btn {
+      flex: 1; padding: 12px; border: none; border-radius: 8px;
+      font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn:active { opacity: 0.7; }
+    .btn-send { background: var(--green); color: #fff; }
+    .btn-save { background: var(--blue); color: #fff; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .toast {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      background: var(--green); color: #fff; padding: 10px 20px; border-radius: 8px;
+      font-weight: 600; font-size: 0.85rem; z-index: 200; opacity: 0;
+      transition: opacity 0.3s; pointer-events: none;
+    }
+
+    .toast.show { opacity: 1; }
+    .toast.error { background: var(--red); }
+
+    .back-link {
+      display: block; text-align: center; color: var(--muted);
+      font-size: 0.75rem; text-decoration: none; margin-bottom: 12px;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; padding-bottom: 90px; }
+      .section { padding: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="index.html" class="back-link">axogames.dev</a>
+  <h1>Mortar & Pistol</h1>
+  <p class="subtitle">Design Workshop — Follow-Up Questions</p>
+  <p class="subtitle" style="font-size:0.7rem; margin-bottom:4px;">Based on your V2 answers. Each question includes context for why it's being asked.</p>
+  <div class="progress">Answered: <span class="count" id="progressCount">0</span> / <span id="totalCount">0</span></div>
+
+  <div id="questionsContainer"></div>
+
+  <div class="bottom-bar">
+    <button class="btn btn-save" onclick="saveLocal()">Save Local</button>
+    <button class="btn btn-send" onclick="sendToDiscord()">Send to Discord</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1485718166914207925/EN4xYAWpprqnR51SNyanYtWs4Jj3zbkLlY6Lj1zqySktm2UFSrVy8dIIAzMo-DFxzP8w";
+    const SAVE_KEY = "mp_workshop_followup_answers";
+
+    const SECTIONS = [
+      {
+        id: "S1", title: "The Hybrid Upgrade System",
+        desc: "You said 'Option A + B mixed' with unified passives. Let's pin down exactly what this hybrid looks like in practice.",
+        questions: [
+          {
+            id: "F1",
+            context: "Your V2 answer: <span class='your-answer'>\"Option A and option B mixed but we need to rework the passives and unify weapon stats so that it's not confusing to figure out what the passives do.\"</span><br><br><strong>Here's what A+B combined could look like:</strong> The level-up pool offers weapons AND passives (like VS), but each weapon also has branching paths at Lv3 and Lv5 (like a skill tree). So the level-up might show: 'Bolt Rifle → Lv3: Choose Overcharge Path or Precision Path' alongside a passive like Gunpowder.",
+            text: "How should weapon branches and passives coexist in the level-up pool?",
+            options: [
+              { label: "Branches replace upgrades", desc: "At Lv3+Lv5: branch choice instead of +stats. Normal levels (2,4): stat upgrades. Passives in pool as separate items." },
+              { label: "Branches are bonus picks", desc: "Normal weapon upgrades Lv1-5. At Lv3+Lv5 you ALSO get a free branch pick on top of the normal level-up." },
+              { label: "Branches only for character weapon", desc: "Character weapon has branches (Lv3+Lv5). Pool weapons are simple Lv1-5. Passives for both." },
+            ]
+          },
+          {
+            id: "F2",
+            context: "You said passives need to be 'unified' so it's not confusing. Currently each passive maps to one stat (Gunpowder → damage_mult, Clockwork → fire_rate_mult, etc). The confusion is that some passives do nothing for certain weapons (e.g., Birdshot is useless for Powder Keg without creative synergy).",
+            text: "What does 'unified passives' mean to you?",
+            options: [
+              { label: "Every passive affects every weapon", desc: "Creative reinterpretations (Birdshot on Keg = post-explosion shrapnel). No dead picks. More design work." },
+              { label: "Fewer, broader passives", desc: "Reduce from 8 to 4-5 passives that each affect multiple stats. e.g., 'Power Core: +damage, +area'. Simpler." },
+              { label: "Category-based passives", desc: "Passives grouped: 'Offensive' (damage+crit+speed), 'Defensive' (HP+regen+armor), 'Utility' (pickup+XP+luck). Pick one from each." },
+            ]
+          },
+          {
+            id: "F3",
+            context: "With weapon branches at Lv3+Lv5, each character weapon would have 4 possible final forms (2 choices × 2 choices). For example, the Bolt Rifle might branch into:<br>• Lv3: <strong>Overcharge</strong> (wider beam, slower) vs <strong>Split Beam</strong> (2 thinner beams)<br>• Lv5: <strong>Sustained</strong> (continuous beam) vs <strong>Burst</strong> (massive single pulse)<br>This creates 4 combos: Wide+Sustained, Wide+Burst, Split+Sustained, Split+Burst.",
+            text: "Should pool weapons also have branches, or just character weapons?",
+            options: [
+              { label: "Character weapons only", desc: "4 heroes × 4 forms = 16 variants. Pool weapons stay simple Lv1-5. Keeps scope manageable." },
+              { label: "All weapons branch", desc: "Every weapon has branches. 10 weapons × 4 forms = 40 variants. Huge variety, huge design work." },
+              { label: "Character branch, pool transmute", desc: "Character weapons branch. Pool weapons keep the existing transmutation system (Lv5 + passive = evolved form)." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S2", title: "Banish & Reroll as Meta Progression",
+        desc: "You want Banish unlockable and upgradeable through the meta shop. Let's define the specifics.",
+        questions: [
+          {
+            id: "F4",
+            context: "Your V2 answer: <span class='your-answer'>\"Not available from the start, should be unlockable and upgraded via meta shop.\"</span> You also said reroll count should be meta progression.",
+            text: "How should Banish unlock and scale?",
+            options: [
+              { label: "Unlock: 1 banish → Upgrade: +1 per tier (max 5)", desc: "Buy unlock in Forge (100 dust). Then 5 tiers of +1 banish each. Starts at 1/run, maxes at 5/run." },
+              { label: "Unlock: 2 banishes → Upgrade: +1 per tier (max 4)", desc: "Start with 2 on unlock. Fewer upgrade tiers needed." },
+              { label: "Unlock: unlimited banishes, but costs rerolls", desc: "Banish uses a reroll charge. No separate counter — rerolls and banishes share a pool." },
+            ]
+          },
+          {
+            id: "F5",
+            context: "Currently the game gives 3 rerolls per run (hard-coded). You want reroll count to come from meta progression instead.",
+            text: "Should rerolls start at 0 and be fully meta-earned, or start with a base amount?",
+            options: [
+              { label: "Start at 0, earn via Forge", desc: "New players have no rerolls. Adds urgency early, rewards investment. Forge tiers: +1/level, max 5." },
+              { label: "Start at 1, upgrade to 5", desc: "Everyone gets 1 reroll. Forge adds +1 per tier up to 5 total." },
+              { label: "Start at 2, upgrade to 5", desc: "Generous base. Forge still valuable but first runs aren't punishing." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S3", title: "How Elements Work (Explained)",
+        desc: "You said you need more info on the element system. Here's how it works, then some focused questions.",
+        questions: [
+          {
+            id: "F6",
+            context: "<strong>How elements work:</strong> During a run, you can gain ONE elemental affinity. It modifies ALL your weapons globally — changing their damage, fire rate, and adding a special effect. For example, picking <strong>Fire</strong> means every weapon you own deals -15% damage but fires 25% faster and applies a burn DoT. Picking <strong>Earth</strong> means +25% damage but -20% fire rate, and all projectiles are bigger. <br><br>The question is: how do you GET an element? Options include: it shows up in the level-up pool as a card (like a weapon or passive), it drops from bosses/elites, you pick it at character select, or it's earned at fixed time milestones.",
+            text: "Now that you understand the system: how should elements be offered?",
+            options: [
+              { label: "Level-up pool (rare card)", desc: "Appears as a special card in the 3-choice level-up. Lower weight than weapons/passives (~every 4-5 levels). Easy to implement." },
+              { label: "First boss drop (5:00)", desc: "Defeat the 5:00 boss, choose from 3 random elements as a reward. Guaranteed, dramatic, one-time." },
+              { label: "Milestone chest", desc: "At 3:00, a chest spawns. Walk to it, pick from 2-3 elements. Separate from level-up system entirely." },
+              { label: "Character select", desc: "Pick element before the run starts. Part of your build identity from minute 0. No in-run element decisions." },
+            ]
+          },
+          {
+            id: "F7",
+            context: "You said Void's damage trade-off (-30% damage, -15% fire rate, reduces max HP) feels too harsh. That's fair — Void is currently the 'hardest to use' element. <br><br>Some rework ideas: <strong>Option A:</strong> Keep the max-HP reduction on enemies but give Void better base stats (-15% damage instead of -30%). <strong>Option B:</strong> Replace the mechanic entirely — Void could instead cause enemies to take increasing damage the more Void hits they've taken (stacking vulnerability). <strong>Option C:</strong> Void could pull enemies toward the damage source (micro-gravity wells).",
+            text: "Which direction for a Void rework?",
+            options: [
+              { label: "A: Same mechanic, better stats", desc: "Keep 'reduces max HP' but soften to -15% damage, -10% fire rate. Still unique, less punishing." },
+              { label: "B: Stacking vulnerability", desc: "Each Void hit marks the enemy. Marked enemies take +5% more damage per stack (all sources). Rewards focus fire." },
+              { label: "C: Gravity wells", desc: "Void hits create micro-pulls that drag enemies toward impact. Crowd control element. Combos well with AoE." },
+              { label: "D: Execution threshold", desc: "Void-damaged enemies below 20% HP are instantly killed. Reward for getting enemies low." },
+            ]
+          },
+          {
+            id: "F8",
+            context: "You answered: <span class='your-answer'>\"4 hero weapons × best element first, then add more later.\"</span> Great — let's pick the pairings. Here are the proposed 'signature' combos from the design doc:",
+            text: "Which element should be each hero's 'signature' first interaction?",
+            options: [
+              { label: "As designed", desc: "Wizard+Lightning (fork bolt), Alchemist+Poison (DoT puddles), Bombardier+Fire (burning ground), Assassin+Wind (triple-tap)." },
+              { label: "Swap some", desc: "I want different pairings — I'll describe in the notes." },
+              { label: "Test first", desc: "Implement base element stat mods first. Pick signature interactions after playtesting feels." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S4", title: "Hero Talents (New System)",
+        desc: "You suggested changing 'Weapon Talents' to 'Hero Talents' that affect the base hero AND weapon. Let's define this.",
+        questions: [
+          {
+            id: "F9",
+            context: "Your V2 answer: <span class='your-answer'>\"Maybe change these to hero talents instead so they can affect the base hero/weapon and we don't have to lock ourselves in.\"</span><br><br>This is a great idea. Hero Talents could be unique upgrades that only appear for YOUR hero in the level-up pool and modify your hero's identity (dash, weapon, and base stats) rather than just the weapon.",
+            text: "What should Hero Talents look like in the level-up pool?",
+            options: [
+              { label: "3-5 unique cards per hero", desc: "Each hero has 3-5 named talents (e.g., Wizard: 'Arcane Overload', 'Mana Shield', 'Chain Lightning'). Appear mixed into normal level-ups." },
+              { label: "Talent tree (separate UI)", desc: "A small skill tree per hero. Spend talent points earned from leveling. Opens as its own panel." },
+              { label: "Milestone unlocks", desc: "At levels 5, 10, 15: a forced talent choice appears (instead of normal level-up). 2 options each time." },
+            ]
+          },
+          {
+            id: "F10",
+            context: "Hero Talents could buff the hero's dash, their weapon, their stats, or grant entirely new abilities. Examples:<br>• <strong>Wizard — Arcane Overload:</strong> Beam hits apply a 'shatter' mark. 3 marks = AoE explosion.<br>• <strong>Alchemist — Volatile Mixtures:</strong> Scatter Flask shrapnel explodes on contact instead of piercing.<br>• <strong>Bombardier — Remote Detonation:</strong> Press fire to manually detonate kegs early.<br>• <strong>Assassin — Ghost Step:</strong> Dash leaves a decoy that draws enemy aggro for 2s.",
+            text: "Should Hero Talents modify the weapon, the hero, or both?",
+            options: [
+              { label: "Both — weapon + hero", desc: "Some talents modify the weapon, some modify the hero (dash, passive effects). Mix and match." },
+              { label: "Weapon only", desc: "All talents are weapon modifications. Keeps the system focused on the combat identity." },
+              { label: "Hero only", desc: "All talents are dash/movement/survival modifications. Weapons stay clean, heroes get more identity." },
+            ]
+          },
+          {
+            id: "F11",
+            context: "You also mentioned Suffocate (Wind's debuff) could be a hero-specific upgrade. This opens the door for elements and hero talents to interact.",
+            text: "Should some Hero Talents be element-gated? (Only available if you have a specific element.)",
+            options: [
+              { label: "Yes, element-gated talents", desc: "e.g., Assassin + Wind: 'Tempest Dash' — dash creates a wind vortex. Encourages specific element picks." },
+              { label: "No, always available", desc: "Hero Talents are independent of elements. Keeps systems separate and simpler." },
+              { label: "Later", desc: "Launch Hero Talents without element gating. Add element-gated ones as a future expansion." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S5", title: "Shielded Elite — Custom Design",
+        desc: "You described a unique shield mechanic. Let's flesh it out.",
+        questions: [
+          {
+            id: "F12",
+            context: "Your V2 answer: <span class='your-answer'>\"Timed shield, slower while up and facing player, faster while down, 'shield rush' mechanic where it charges like a bull with an arrow telegraph so the player can dodge.\"</span><br><br>This is a great custom design. Let me break it into specifics:",
+            text: "Shield Rush — how fast and how far should the charge be?",
+            options: [
+              { label: "Fast + short", desc: "300 speed for 0.5s (~150px). Quick lunge. Player needs fast reflexes." },
+              { label: "Medium + medium", desc: "200 speed for 1.0s (~200px). Telegraphed, gives time to dodge." },
+              { label: "Slow + long", desc: "150 speed for 1.5s (~225px). Long wind-up, long charge. Dramatic but dodgeable." },
+            ]
+          },
+          {
+            id: "F13",
+            context: "The shield cycle needs timing. While shield is UP: moves slower, takes reduced frontal damage, faces player. While shield is DOWN: moves faster, fully vulnerable, may charge.",
+            text: "How long should the shield up/down cycle be?",
+            options: [
+              { label: "3s up / 2s down", desc: "Shield up most of the time. Short vulnerability windows. Demanding." },
+              { label: "2s up / 3s down", desc: "Vulnerable most of the time. Shield is a periodic threat, not the default." },
+              { label: "4s up / 2s down / charge", desc: "Shield up, then drops shield and immediately charges. 2s recovery after charge." },
+            ]
+          },
+          {
+            id: "F14",
+            context: "You mentioned an arrow telegraph for the charge. What about the shield itself?",
+            text: "When the shield is up, how much damage reduction?",
+            options: [
+              { label: "75% frontal reduction", desc: "Still takes chip damage. Rewards sustained attacks from the front." },
+              { label: "100% block (immune)", desc: "Completely immune from the front while shield is up. Must flank or wait." },
+              { label: "Absorb shield (HP bar)", desc: "Shield has its own HP (e.g., 50). Breaking it stuns the elite for 1.5s." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S6", title: "Armor Piercing & New Stats",
+        desc: "You suggested an Armor Piercing stat for Ironclads. Let's define how it integrates.",
+        questions: [
+          {
+            id: "F15",
+            context: "Your V2 answer on Ironclads: <span class='your-answer'>\"Armor HP bar. Armor piercing stat for taking the armor off quickly or bypassing it entirely.\"</span><br><br>So Ironclads have a separate armor bar that must be broken before dealing HP damage. An 'Armor Piercing' stat lets some weapons/passives bypass or shred armor faster.",
+            text: "How should Armor Piercing work?",
+            options: [
+              { label: "Percentage bypass", desc: "Armor Piercing: X% of damage ignores armor and goes straight to HP. At 100%, armor is irrelevant." },
+              { label: "Bonus armor damage", desc: "Armor Piercing: deal X% bonus damage TO armor. Shreds armor faster but doesn't bypass it." },
+              { label: "Flat armor ignore", desc: "Each hit ignores X points of armor damage reduction. Good against light armor, less against heavy." },
+            ]
+          },
+          {
+            id: "F16",
+            context: "Armor Piercing needs a source. It could be a new passive, a weapon property, an element effect, or some combination.",
+            text: "Where does Armor Piercing come from?",
+            options: [
+              { label: "New passive: Piercing Rounds", desc: "A new passive item in the level-up pool. Lv1-5, scaling armor pierce." },
+              { label: "Built into certain weapons", desc: "Some weapons have innate armor pierce (e.g., Bolt Rifle beam ignores 50% armor). No separate stat needed." },
+              { label: "Lightning element bonus", desc: "Lightning already adds +2 pierce. Extend it: Lightning also grants armor penetration. Thematic fit." },
+              { label: "All three", desc: "Base pierce on some weapons + passive for more + Lightning element bonus. Multiple stacking sources." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S7", title: "Clarifications (Things That Need Explaining)",
+        desc: "Some V2 questions confused you. Here's context and revised questions.",
+        questions: [
+          {
+            id: "F17",
+            context: "<strong>Why boss HP scales with kills:</strong> The idea is to prevent a 'farming' strategy where a player intentionally kills as many weak enemies as possible to over-level before the boss. If you killed 800 enemies, you probably have a strong build — so the boss should be tougher to match. If you played cautiously and only killed 200, the boss is easier but you're also weaker.<br><br>It's basically: <strong>the boss matches your power level</strong>. Without it, experienced players would trivialize bosses by farming the early waves.",
+            text: "Does boss HP scaling with kill count make sense now? Should we keep it?",
+            options: [
+              { label: "Yes, keep it", desc: "Prevents trivial bosses for players who farm. Good dynamic difficulty." },
+              { label: "Scale with time instead", desc: "Boss HP based on the clock, not kills. Simpler, more predictable. Same HP regardless of playstyle." },
+              { label: "Scale with player level", desc: "Boss HP based on what level you are. Direct power-match instead of kill proxy." },
+              { label: "Fixed HP", desc: "Boss has set HP. Balance it for a target build level. Simple and testable." },
+            ]
+          },
+          {
+            id: "F18",
+            context: "<strong>What 'free level-up' from Storm Weaver means:</strong> When you defeat the 10:00 boss, you immediately get a level-up screen (the normal 3-card choice) as a bonus — on top of whatever XP you earned. It's a guaranteed power spike for winning the boss fight.<br><br>Think of it like: boss drops a 'level-up orb' that instantly triggers the upgrade UI. You still pick from the normal pool, it's just a free pick.",
+            text: "Does the free level-up reward make sense now? Should we keep it?",
+            options: [
+              { label: "Yes, free normal level-up", desc: "Defeat boss → instant level-up screen with normal 3-card choices. Simple, satisfying." },
+              { label: "Free level-up with better options", desc: "Same idea but the 3 cards are guaranteed to include at least 1 rare/powerful option." },
+              { label: "Boss-specific reward instead", desc: "Instead of a level-up, bosses drop a unique item you can't get elsewhere (boss-exclusive passive or weapon upgrade)." },
+              { label: "Just bonus XP", desc: "Skip the special mechanic. Boss gives a big chunk of XP that probably triggers a natural level-up anyway." },
+            ]
+          },
+          {
+            id: "F19",
+            context: "<strong>Pool weapon unlock:</strong> The reward for 'Complete 1 run with each hero' is un-archiving ALL 6 pool weapons (Bayonet Rush, Mortar Burst, Arc Discharge, Ember Shells, Blight Flask, Seeker Rounds). Currently these exist in code but are hidden from the level-up pool. Unlocking them means any hero can find them during a run, dramatically increasing build variety.",
+            text: "Is un-archiving all 6 pool weapons a good enough reward for winning with each hero?",
+            options: [
+              { label: "Yes, great reward", desc: "6 new weapons is massive. Worth the effort of winning 4 runs." },
+              { label: "Too much at once", desc: "Unlock 2 pool weapons per hero win instead. Spreads the excitement over multiple milestones." },
+              { label: "Unlock on first boss kill instead", desc: "As you suggested — beat the first boss (5:00) with a hero. Lower bar than winning, still requires effort." },
+            ]
+          },
+          {
+            id: "F20",
+            context: "<strong>In Vampire Survivors, map boundaries work like this:</strong> The playable area is a large rectangle. If you walk to the edge, you simply can't go further — invisible walls. There's no damage or slow, just a hard stop. Enemies can spawn outside the visible area and walk in. There's a faint visual cue (the ground pattern ends) but no mechanical punishment.<br><br>M&P currently has infinite space (no walls at all) with enemies spawning at 600px from the player.",
+            text: "With this context, what should M&P's boundaries be?",
+            options: [
+              { label: "VS-style: invisible walls", desc: "Hard boundary at ~1000px from center. Can't walk past it. Simple, clear." },
+              { label: "Soft boundary: slow ramp", desc: "Past 800px, movement gets progressively slower. No damage, just discouragement." },
+              { label: "Keep infinite, no boundary", desc: "No walls, no penalty. The action naturally keeps you near center. Trust the player." },
+              { label: "Circular arena with visible edge", desc: "A visible ring at 800px. Walking past it is fine but nothing spawns out there — it's just empty." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S8", title: "Audio & Asset Sourcing",
+        desc: "You mentioned not knowing where to get sounds/music. Here are some practical options.",
+        questions: [
+          {
+            id: "F21",
+            context: "Your V2 answer: <span class='your-answer'>\"I have no clue where I would get sounds or music from, I have no ability to make my own and the free sfx packs from Kenney were so bad I couldn't even get one usable effect from them.\"</span><br><br><strong>Free/cheap audio sources that work well for games:</strong><br>• <strong>jsfxr (sfxr.me)</strong> — You're already using this! Browser-based, generates retro SFX. Good for weapon/UI sounds.<br>• <strong>Freesound.org</strong> — CC-licensed real-world recordings. Search 'explosion', 'sword slash', etc. Mix quality.<br>• <strong>Pixabay</strong> — Royalty-free music and SFX. Good for background music tracks.<br>• <strong>Kevin MacLeod (incompetech.com)</strong> — Hundreds of free music tracks. Many games use these.<br>• <strong>AI generation (Suno, Udio)</strong> — Generate custom music tracks with text prompts. Surprisingly good for game music.<br>• <strong>Paid: Epidemic Sound / Artlist</strong> — Subscription services with huge libraries. ~$15/mo.",
+            text: "Which audio sourcing approach interests you most?",
+            options: [
+              { label: "jsfxr only (current)", desc: "Keep generating all sounds with jsfxr/sfxr. Consistent retro aesthetic. Limited range." },
+              { label: "jsfxr + AI music", desc: "sfxr for SFX, AI-generated tracks for background music. Modern approach, free." },
+              { label: "jsfxr + Freesound/Pixabay", desc: "sfxr for SFX, free library tracks for music. Mix of generated and recorded." },
+              { label: "Defer audio entirely", desc: "Focus on gameplay first. Audio can come later when the game is more complete." },
+            ]
+          },
+        ]
+      },
+    ];
+
+    let answers = {};
+    let totalQuestions = 0;
+
+    function init() {
+      SECTIONS.forEach(s => { totalQuestions += s.questions.length; });
+      document.getElementById('totalCount').textContent = totalQuestions;
+      const saved = localStorage.getItem(SAVE_KEY);
+      if (saved) { try { answers = JSON.parse(saved); } catch (e) { } }
+      render();
+      updateProgress();
+    }
+
+    function render() {
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = '';
+      SECTIONS.forEach(section => {
+        const div = document.createElement('div');
+        div.className = 'section';
+        let html = `<div class="section-title">${section.title}</div>`;
+        html += `<div class="section-desc">${section.desc}</div>`;
+
+        section.questions.forEach((q, qi) => {
+          html += `<div class="question">`;
+          if (q.context) html += `<div class="context-box">${q.context}</div>`;
+          html += `<div class="q-label"><span class="q-num">${q.id}</span>: ${q.text}</div>`;
+          if (q.options) {
+            html += `<div class="options">`;
+            q.options.forEach(opt => {
+              const sel = answers[q.id] === opt.label ? 'selected' : '';
+              const safeLabel = opt.label.replace(/'/g, "\\'");
+              html += `<button class="opt-btn ${sel}" onclick="onSelect('${q.id}', '${safeLabel}', this)">`;
+              html += `<span class="opt-label">${opt.label}</span>`;
+              if (opt.desc) html += `<span class="opt-desc">${opt.desc}</span>`;
+              html += `</button>`;
+            });
+            html += `</div>`;
+          }
+          const textKey = q.id + '_text';
+          const textVal = answers[textKey] || '';
+          html += `<span class="text-label">Notes / alternative ideas:</span>`;
+          html += `<textarea class="text-input" id="ta_${q.id}" placeholder="Type your thoughts here..." oninput="onText('${q.id}_text', this.value)">${textVal}</textarea>`;
+          html += `</div>`;
+          if (qi < section.questions.length - 1) html += `<div class="divider"></div>`;
+        });
+
+        div.innerHTML = html;
+        container.appendChild(div);
+      });
+    }
+
+    function onSelect(qid, value, btn) {
+      answers[qid] = value;
+      btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      autoSave(); updateProgress();
+    }
+
+    function onText(key, value) { answers[key] = value; autoSave(); updateProgress(); }
+
+    function updateProgress() {
+      let count = 0;
+      SECTIONS.forEach(s => {
+        s.questions.forEach(q => {
+          if ((answers[q.id] && answers[q.id].trim()) || (answers[q.id + '_text'] && answers[q.id + '_text'].trim())) count++;
+        });
+      });
+      document.getElementById('progressCount').textContent = count;
+    }
+
+    function autoSave() { localStorage.setItem(SAVE_KEY, JSON.stringify(answers)); }
+
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (isError ? ' error' : '');
+      setTimeout(() => t.className = 'toast', 2500);
+    }
+
+    function buildMarkdown() {
+      let md = "# Workshop Follow-Up Answers\n\n";
+      SECTIONS.forEach(section => {
+        md += `## ${section.title}\n\n`;
+        section.questions.forEach(q => {
+          const choice = answers[q.id] || "(no selection)";
+          const notes = answers[q.id + '_text'] || "";
+          md += `**${q.id}**: ${q.text}\n`;
+          md += `> **${choice}**\n`;
+          if (notes.trim()) md += `> Notes: ${notes}\n`;
+          md += `\n`;
+        });
+      });
+      return md;
+    }
+
+    function saveLocal() {
+      autoSave();
+      const md = buildMarkdown();
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'WORKSHOP_FOLLOWUP_ANSWERS.md'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloaded WORKSHOP_FOLLOWUP_ANSWERS.md');
+    }
+
+    async function sendToDiscord() {
+      const answered = [];
+      SECTIONS.forEach(s => {
+        s.questions.forEach(q => {
+          if ((answers[q.id] && answers[q.id].trim()) || (answers[q.id + '_text'] && answers[q.id + '_text'].trim())) answered.push(q);
+        });
+      });
+      if (answered.length === 0) { showToast('Answer at least one question first', true); return; }
+
+      const embeds = [];
+      let cur = { title: "Follow-Up Answers", color: 15844367, fields: [], footer: { text: `${answered.length}/${totalQuestions} answered` }, timestamp: new Date().toISOString() };
+
+      SECTIONS.forEach(section => {
+        section.questions.forEach(q => {
+          const choice = answers[q.id];
+          const notes = answers[q.id + '_text'];
+          if ((!choice || !choice.trim()) && (!notes || !notes.trim())) return;
+          if (cur.fields.length >= 25) { embeds.push(cur); cur = { title: "Follow-Up (cont.)", color: 15844367, fields: [] }; }
+          let val = choice ? `**${choice}**` : "(no selection)";
+          if (notes && notes.trim()) val += `\n> ${notes.substring(0, 900)}`;
+          if (val.length > 1024) val = val.substring(0, 1021) + '...';
+          cur.fields.push({ name: `${q.id}: ${q.text.substring(0, 200)}`, value: val, inline: false });
+        });
+      });
+      embeds.push(cur);
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: "**Design Workshop Follow-Up Responses**", embeds: embeds.slice(0, 10) })
+        });
+        if (res.ok || res.status === 204) showToast('Sent to Discord!');
+        else showToast('Discord error: ' + res.status, true);
+      } catch (e) { showToast('Network error', true); }
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
