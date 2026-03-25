@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>M&P Design Workshop V2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a12;
+      --card: #14131e;
+      --border: #2a2840;
+      --gold: #d4a843;
+      --text: #e0dde8;
+      --muted: #8884a0;
+      --green: #2ecc71;
+      --red: #e74c3c;
+      --blue: #3498db;
+      --accent: #c44dff;
+      --accent2: #ff6b9d;
+      --accent3: #4dccff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      padding-bottom: 100px;
+    }
+
+    h1 {
+      color: var(--gold);
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 4px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .nav-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .nav-btn .nav-count {
+      font-size: 0.6rem;
+      opacity: 0.6;
+      margin-left: 3px;
+    }
+
+    .progress {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 14px;
+    }
+
+    .progress .count { color: var(--gold); font-weight: 700; }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .section.blocking { border-left: 3px solid var(--red); }
+    .section.high { border-left: 3px solid var(--accent2); }
+    .section.medium { border-left: 3px solid var(--accent); }
+    .section.low { border-left: 3px solid var(--accent3); }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .section-title {
+      color: var(--gold);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .section-badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-blocking { background: var(--red); color: #fff; }
+    .badge-high { background: var(--accent2); color: #fff; }
+    .badge-medium { background: var(--accent); color: #fff; }
+    .badge-low { background: var(--accent3); color: #000; }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .question { margin-bottom: 20px; }
+    .question:last-child { margin-bottom: 0; }
+
+    .q-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .q-label .q-num {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .opt-btn {
+      background: #1c1b2e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.3;
+    }
+
+    .opt-btn:hover { border-color: var(--gold); }
+
+    .opt-btn.selected {
+      background: #1f1e35;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+
+    .opt-btn .opt-label { font-weight: 600; }
+
+    .opt-btn .opt-desc {
+      color: var(--muted);
+      font-size: 0.75rem;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .text-input {
+      width: 100%;
+      background: #1c1b2e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+      resize: vertical;
+      min-height: 50px;
+      outline: none;
+      margin-top: 6px;
+    }
+
+    .text-input:focus { border-color: var(--gold); }
+
+    .text-input::placeholder { color: #555; }
+
+    .text-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 6px;
+      display: block;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn:active { opacity: 0.7; }
+    .btn-send { background: var(--green); color: #fff; }
+    .btn-save { background: var(--blue); color: #fff; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show { opacity: 1; }
+    .toast.error { background: var(--red); }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; padding-bottom: 90px; }
+      .section { padding: 14px; }
+      .nav-bar { gap: 4px; }
+      .nav-btn { padding: 4px 7px; font-size: 0.65rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="index.html" class="back-link">axogames.dev</a>
+  <h1>Mortar & Pistol</h1>
+  <p class="subtitle">Design Workshop V2 — Open Questions</p>
+  <div class="progress">Answered: <span class="count" id="progressCount">0</span> / <span id="totalCount">0</span></div>
+
+  <div class="nav-bar" id="navBar"></div>
+  <div id="questionsContainer"></div>
+
+  <div class="bottom-bar">
+    <button class="btn btn-save" onclick="saveLocal()">Save Local</button>
+    <button class="btn btn-send" onclick="sendToDiscord()">Send to Discord</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1485718166914207925/EN4xYAWpprqnR51SNyanYtWs4Jj3zbkLlY6Lj1zqySktm2UFSrVy8dIIAzMo-DFxzP8w";
+    const SAVE_KEY = "mp_workshop_v2_answers";
+
+    const SECTIONS = [
+      {
+        id: "S1", title: "Upgrade System Rework", priority: "blocking",
+        desc: "Passives are removed from the level-up pool. The entire upgrade loop needs a new direction. This blocks elements, passives, and build identity.",
+        questions: [
+          {
+            id: "Q1", text: "Which upgrade system model should M&P use?",
+            options: [
+              { label: "A: VS Classic", desc: "Restore passives to level-up pool alongside weapons. Add Reroll/Banish. Industry standard." },
+              { label: "B: Branching Weapons", desc: "Level-ups are weapon-only. At key levels (3, 5), weapons branch into 2 paths. Passives from chests/drops." },
+              { label: "C: Forge Hybrid", desc: "Level-up pool has weapons + minor traits. Full passives from boss drops and milestone chests (3:00, 6:00, 9:00)." },
+              { label: "D: Gunsmith's Table", desc: "Periodic shop phases every 2-3 minutes. Buy upgrades with in-run currency. More agency, less RNG." },
+            ]
+          },
+          {
+            id: "Q2", text: "What happens when all weapon slots (6) are full and weapon is maxed?",
+            options: [
+              { label: "Passive-only choices", desc: "Level-up only shows passives/traits once weapons are full." },
+              { label: "Reroll + filler", desc: "Small stat boosts or currency as fallback choices." },
+              { label: "Weapon replacement", desc: "Can swap an existing weapon for a new one." },
+              { label: "Skip for reward", desc: "Take a small heal, XP boost, or currency instead of an upgrade." },
+            ]
+          },
+          {
+            id: "Q3", text: "Should the Banish mechanic exist? (Permanently remove an item from the level-up pool for the run.)",
+            options: [
+              { label: "Yes, from start", desc: "Available from the beginning. Key skill expression tool." },
+              { label: "Yes, but limited", desc: "2-3 banishes per run. Precious resource." },
+              { label: "No banish", desc: "Only rerolls. Pool is what it is." },
+            ]
+          },
+          {
+            id: "Q4", text: "Should players be able to skip a level-up entirely?",
+            options: [
+              { label: "Yes, skip for heal", desc: "Pass on all 3 choices, get a small heal instead." },
+              { label: "Yes, skip for currency", desc: "Pass on choices, earn in-run or meta currency." },
+              { label: "No skip — forced choice", desc: "Must pick from the 3 options. Roguelike tension." },
+            ]
+          },
+          {
+            id: "Q5", text: "If Option B (Branching Weapons) is chosen, how should weapon branches work?",
+            options: [
+              { label: "2 paths at Lv3 + Lv5", desc: "Choose a specialization twice, creating 4 possible final forms per weapon." },
+              { label: "1 branch at Lv5 only", desc: "Single branching point. Simpler, 2 final forms per weapon." },
+              { label: "Talent tree sidebar", desc: "Small skill tree per weapon, unlocked alongside normal leveling." },
+            ]
+          },
+          {
+            id: "Q6", text: "If Option D (Gunsmith's Table) is chosen, what in-run currency?",
+            options: [
+              { label: "Scrap from kills", desc: "Enemies drop scrap alongside XP. Simple, familiar." },
+              { label: "Cogs from elites/crates", desc: "Rarer currency from special sources. More deliberate." },
+              { label: "Gold (shared with meta)", desc: "Same currency as meta progression. Spend now or save for permanent upgrades." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S2", title: "Passives & Stats", priority: "high",
+        desc: "Passives are in limbo (code exists, not offered). New stats are proposed. How stats work affects everything.",
+        questions: [
+          {
+            id: "Q7", text: "Should passives feel like part of the weapon system or a separate system?",
+            options: [
+              { label: "Separate (VS-style)", desc: "Passives are their own items in their own slots. Clear separation." },
+              { label: "Weapon attachments", desc: "Passives slot onto specific weapons. More synergy, more complex UI." },
+              { label: "Global modifiers", desc: "Passives apply to everything automatically. Simplest for player." },
+            ]
+          },
+          {
+            id: "Q8", text: "Should Crit Chance + Crit Damage be added as stats?",
+            options: [
+              { label: "Yes, with passive", desc: "Add a crit passive, start at 5% chance / 1.5x damage. Universal excitement." },
+              { label: "Yes, from meta only", desc: "Crit comes from The Forge (permanent upgrade). Not an in-run choice." },
+              { label: "No crit system", desc: "Keep damage predictable. Variance comes from weapon types, not RNG." },
+            ]
+          },
+          {
+            id: "Q9", text: "Should HP Regen exist as a stat?",
+            options: [
+              { label: "Yes, passive or meta", desc: "Slow HP recovery (0.5-2 HP/s). Adds survivability option." },
+              { label: "Heal on kill only", desc: "Small HP on kill instead of passive regen. Rewards aggression." },
+              { label: "No regen", desc: "HP only from heal pickups. Keep survival tense." },
+            ]
+          },
+          {
+            id: "Q10", text: "Should Duration be a separate stat from weapon levels?",
+            options: [
+              { label: "Yes, as passive", desc: "Duration passive affects DOT/orbit/AOE weapon timers. New build axis." },
+              { label: "No, baked into levels", desc: "Duration scales automatically per weapon level. Simpler." },
+            ]
+          },
+          {
+            id: "Q11", text: "How should Cooldown differ from Fire Rate?",
+            options: [
+              { label: "Cooldown = abilities, Fire Rate = weapons", desc: "Cooldown affects dash/specials. Fire Rate affects weapon attacks." },
+              { label: "Merge into one stat", desc: "Fire Rate affects everything. No need for two similar stats." },
+              { label: "Skip Cooldown stat", desc: "Dash cooldown scales from Wind Vents. No separate stat needed." },
+            ]
+          },
+          {
+            id: "Q12", text: "Should Luck affect anything? If so, what?",
+            options: [
+              { label: "Upgrade rarity", desc: "Higher luck = better options in level-up pool." },
+              { label: "Drop rates", desc: "More heals, more lodestone pulses, more crate drops." },
+              { label: "Multiple things", desc: "Rarity + drops + crit chance. A meta-stat." },
+              { label: "No luck", desc: "Keep it deterministic. Player skill, not RNG." },
+            ]
+          },
+          {
+            id: "Q13", text: "Should Knockback be a stat that weapons have?",
+            options: [
+              { label: "Yes, varies per weapon", desc: "Melee and AOE have high knockback. Projectiles have low. Adds CC." },
+              { label: "Yes, as a passive", desc: "Knockback passive adds pushback to all weapons." },
+              { label: "No knockback", desc: "Enemies always walk straight at you. Simpler AI." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S3", title: "Elemental Affinities", priority: "high",
+        desc: "7 elements planned as weapon modifiers. Key design decisions around offering, stacking, and interactions.",
+        questions: [
+          {
+            id: "Q14", text: "How should elements be offered during a run?",
+            options: [
+              { label: "Level-up pool (rare)", desc: "Appear as cards alongside weapons/passives. Lower weight (~every 3 levels)." },
+              { label: "Milestone rewards", desc: "Offered at fixed times (3:00, 7:00, 12:00). Guaranteed but infrequent." },
+              { label: "Boss/elite drops", desc: "Elements drop from special enemies. More earned, less random." },
+              { label: "Starting choice", desc: "Pick your element at character select. Permanent for the run." },
+            ]
+          },
+          {
+            id: "Q15", text: "Can players accidentally replace their element? Should there be a lock/confirm?",
+            options: [
+              { label: "No protection", desc: "Picking a new element replaces the old. Part of the decision." },
+              { label: "Confirm dialog", desc: "'Replace Fire with Lightning?' popup before applying." },
+              { label: "Lock after pick", desc: "Once you pick an element, it's locked for the run." },
+            ]
+          },
+          {
+            id: "Q16", text: "How do elemental stat mods stack with passive stats?",
+            options: [
+              { label: "Multiplicative", desc: "Earth +25% damage * Gunpowder +50% = 1.25 * 1.5 = 1.875x. Compounds." },
+              { label: "Additive", desc: "Earth +25% + Gunpowder +50% = +75%. Simpler, less explosive." },
+              { label: "Element first, then passives", desc: "Element modifies base stats, passives add on top of that." },
+            ]
+          },
+          {
+            id: "Q17", text: "How should Void's 'reduces max HP' interact with healing?",
+            options: [
+              { label: "Max HP returns after 5s", desc: "As written. Temporary debuff, not permanent." },
+              { label: "Permanent reduction", desc: "Void damage is truly devastating. High risk, high damage." },
+              { label: "Returns on enemy death", desc: "Kill the Void-damaged enemy to restore their max HP pool (for score/XP purposes)." },
+            ]
+          },
+          {
+            id: "Q18", text: "Which element x weapon interactions should be built first? (Pick priorities.)",
+            options: [
+              { label: "Character weapons only", desc: "4 hero weapons x their best element. Small scope, high impact." },
+              { label: "All base interactions", desc: "Every weapon gets at least 1 unique element combo. Big scope." },
+              { label: "Stat mods only for V1", desc: "No unique interactions in V1. Just the damage/fire rate modifiers." },
+            ]
+          },
+          {
+            id: "Q19", text: "What does Wind's 'Suffocate' debuff actually do?",
+            options: [
+              { label: "Halves enemy healing/regen", desc: "As written. Matters for future enemies with regen." },
+              { label: "Slows enemy attack speed", desc: "Enemies attack/move 20% slower. More immediately useful." },
+              { label: "Remove it", desc: "Wind's +40% fire rate and +20% move speed are already strong enough." },
+            ]
+          },
+          {
+            id: "Q20", text: "Dual-element attunement (from Elemental Mastery unlock) — how should it work?",
+            options: [
+              { label: "Half effects each", desc: "Pick 2 elements, each at 50% power. As mentioned in doc." },
+              { label: "Full primary, partial secondary", desc: "First element at 100%, second at 30-50%." },
+              { label: "Cut this feature", desc: "Too complex. One element is enough." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S4", title: "Enemies, Elites & Bosses", priority: "high",
+        desc: "Only base Husks exist. Enemy types, elites, and boss encounters are all planned with many open details.",
+        questions: [
+          {
+            id: "Q21", text: "When should each enemy type start spawning?",
+            options: [
+              { label: "Staggered by minute", desc: "Husks 0:00, Wisps 2:00, Ironclads 4:00, Hexborn 7:00, Splitters 10:00." },
+              { label: "By difficulty bracket", desc: "Husks+Wisps 0-5m, add Ironclads 5-10m, add Hexborn+Splitters 10-15m." },
+              { label: "Random from start", desc: "All types from minute 1, weighted by time. More chaotic." },
+            ]
+          },
+          {
+            id: "Q22", text: "How should Ironclad armor work?",
+            options: [
+              { label: "Flat damage reduction", desc: "Reduce each hit by 5-10. Small hits bounce off, big hits punch through." },
+              { label: "Percentage reduction", desc: "Take 50% less damage from all sources." },
+              { label: "Armor HP bar", desc: "Separate armor layer that must be broken first, then vulnerable." },
+            ]
+          },
+          {
+            id: "Q23", text: "Hexborn ranged attacks — how threatening?",
+            options: [
+              { label: "Slow, telegraphed", desc: "1.5s charge-up with warning circle. Dodgeable, low damage." },
+              { label: "Fast but weak", desc: "Quick shots, low damage (5-8). Pressure, not spikes." },
+              { label: "Infrequent but dangerous", desc: "Fires every 3-4s but hits hard (15-20). Rewards priority targeting." },
+            ]
+          },
+          {
+            id: "Q24", text: "When a Splitter dies and splits into Wisps, do the Wisps give XP?",
+            options: [
+              { label: "Full XP each", desc: "Splitters are high-value. Killing one gives XP for parent + children." },
+              { label: "Reduced XP", desc: "Child Wisps give 25-50% normal Wisp XP." },
+              { label: "No XP from children", desc: "Splitter's own XP is the full reward. Children are just hazards." },
+            ]
+          },
+          {
+            id: "Q25", text: "Shielded elite — how to handle 'frontal' for a chasing enemy?",
+            options: [
+              { label: "Shield faces player", desc: "Shield always between elite and player. Must use AoE/chain/orbit to bypass." },
+              { label: "Shield faces movement direction", desc: "Shield faces where it's walking. Kiting makes it vulnerable." },
+              { label: "Timed shield", desc: "Shield up 3s, down 2s. Timing-based vulnerability window." },
+            ]
+          },
+          {
+            id: "Q26", text: "Does the Volatile elite's death explosion damage other enemies?",
+            options: [
+              { label: "Yes, damages everything", desc: "Chain reaction potential. Exciting, chaotic." },
+              { label: "Players only", desc: "Only threatens the player. Simpler, more predictable." },
+              { label: "Enemies + players, reduced", desc: "Full damage to player, 50% to other enemies." },
+            ]
+          },
+          {
+            id: "Q27", text: "Magnetic elite steals XP — what happens when it dies?",
+            options: [
+              { label: "Releases all stolen gems", desc: "XP gems burst out on death. Pinata effect." },
+              { label: "Gems destroyed", desc: "Stolen XP is lost. Kill these fast. High urgency." },
+              { label: "Bonus XP on kill", desc: "Stolen gems gone, but killing gives 3x normal elite XP." },
+            ]
+          },
+          {
+            id: "Q28", text: "During boss fights, do regular enemies still spawn?",
+            options: [
+              { label: "Boss spawns own adds", desc: "Regular waves pause. Boss spawns specific minion types (as designed)." },
+              { label: "Reduced regular waves", desc: "Normal spawns at 50% rate + boss adds." },
+              { label: "Full regular + boss adds", desc: "Maximum chaos. Bosses are a spike on top of normal pressure." },
+            ]
+          },
+          {
+            id: "Q29", text: "Boss HP scaling formula — how should kills_count affect it?",
+            options: [
+              { label: "Linear: +0.5 HP per kill", desc: "Predictable. 500 kills = +250 boss HP." },
+              { label: "Diminishing: +0.5 HP per kill, capped", desc: "Caps at +500 bonus HP. Prevents absurd scaling." },
+              { label: "Bracket-based", desc: "Tiers: <200 kills = base, 200-500 = +200 HP, 500+ = +400 HP." },
+            ]
+          },
+          {
+            id: "Q30", text: "Storm Weaver drops a 'free level-up' — what does that mean?",
+            options: [
+              { label: "Normal level-up choices", desc: "Standard 3-card pick, just triggered immediately." },
+              { label: "Guaranteed rare/powerful options", desc: "Special high-tier choices not normally in the pool." },
+              { label: "Specific boss reward", desc: "A unique upgrade only from bosses (e.g., 'Storm Shard: +chain to all weapons')." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S5", title: "Meta Progression — The Forge", priority: "medium",
+        desc: "Between-run permanent upgrades, achievement unlocks, and currency economy. Phase B2.",
+        questions: [
+          {
+            id: "Q31", text: "Is 15-20 runs to max out The Forge the right pacing?",
+            options: [
+              { label: "Good pace", desc: "~5-8 hours total. Keeps runs feeling rewarding without excessive grinding." },
+              { label: "Too fast", desc: "Should be 30-40 runs. Longer tail keeps players engaged." },
+              { label: "Too slow", desc: "10-12 runs. Get to the fun part faster." },
+            ]
+          },
+          {
+            id: "Q32", text: "What does 'Complete 1 run with each hero' mean for unlocking pool weapons?",
+            options: [
+              { label: "Survive 5+ minutes", desc: "Must reach the 5-minute mark. Quick deaths don't count." },
+              { label: "Any run, any length", desc: "Even a 30-second death counts. Just play each hero once." },
+              { label: "Win with each hero", desc: "Must survive the full 15 minutes. Significant gate." },
+            ]
+          },
+          {
+            id: "Q33", text: "What are Weapon Talents? (Referenced in unlocks but never defined.)",
+            options: [
+              { label: "Branching upgrades", desc: "At Lv5, weapon can diverge into 2 specializations. Like mini-transmutations." },
+              { label: "Unique level-up cards", desc: "Special upgrades that only appear for your character weapon (e.g. 'Forked Shot')." },
+              { label: "Meta-progression unlocks", desc: "Permanent bonuses to your character weapon bought in The Forge." },
+            ]
+          },
+          {
+            id: "Q34", text: "Who is the third boss at 15:00 for the True Ending 20-minute run?",
+            options: [
+              { label: "The Hive Mother", desc: "Spawns Splitters, poison clouds, vacuum pull. As mentioned in the old design." },
+              { label: "Design later", desc: "Don't commit to a third boss now. Focus on the first two." },
+              { label: "Final swarm (no boss)", desc: "Instead of a boss, a massive wave of all enemy types at once." },
+            ]
+          },
+          {
+            id: "Q35", text: "Should God Mode runs show a warning that progression is disabled?",
+            options: [
+              { label: "Yes, clear warning", desc: "Toast or banner: 'God Mode — No Arcane Dust earned.' on run start." },
+              { label: "Yes, in character select", desc: "Indicator next to the hero cards when god mode is on." },
+              { label: "No warning needed", desc: "God mode is a debug tool. Players who use it know the tradeoff." },
+            ]
+          },
+          {
+            id: "Q36", text: "Crates drop Arcane Dust (5%) — how does meta currency drop during a run?",
+            options: [
+              { label: "Pick up now, credited at end", desc: "Collect dust during run, added to total on game over/victory." },
+              { label: "Bonus to end-of-run total", desc: "Crate dust adds to the formula. Never shows during run." },
+              { label: "Remove in-run dust drops", desc: "All Arcane Dust comes from end-of-run calculations only." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S6", title: "Arena & Environment", priority: "medium",
+        desc: "Breakable crates, braziers, hazards, and map boundaries. Phase A3c.",
+        questions: [
+          {
+            id: "Q37", text: "What is 'center' for the play area? Where do crates/braziers spawn?",
+            options: [
+              { label: "World origin (fixed)", desc: "Center is always (0,0). Crates are static landmarks." },
+              { label: "Player spawn point", desc: "Center is where you start. Same as world origin unless spawn moves." },
+              { label: "Dynamic (follows action)", desc: "Center shifts toward where enemies are thickest. Keeps items relevant." },
+            ]
+          },
+          {
+            id: "Q38", text: "Shield Brazier — should it block any amount of damage?",
+            options: [
+              { label: "Yes, any single hit", desc: "Even a boss ground slam. High value, clutch saves." },
+              { label: "Cap at 50 damage", desc: "Blocks up to 50 damage. Boss attacks break through partially." },
+              { label: "Only regular hits", desc: "Blocks normal enemy contact. Boss attacks ignore it." },
+            ]
+          },
+          {
+            id: "Q39", text: "Should there be a mechanical consequence for going past the 800px vignette?",
+            options: [
+              { label: "No, cosmetic only", desc: "Just visual darkening. Players can go wherever they want." },
+              { label: "Slow ramp", desc: "Past 800px, gradual slow effect. Gently discourages edge camping." },
+              { label: "Damage zone", desc: "Past 1000px, take light damage. Hard boundary." },
+            ]
+          },
+          {
+            id: "Q40", text: "Environmental hazards (Corrupted Zones, Ley Lines) — should they be in V1?",
+            options: [
+              { label: "Yes, both", desc: "Add both in Phase A3c. More arena variety." },
+              { label: "Corrupted Zones only", desc: "Threatening element first. Ley Lines are stretch." },
+              { label: "Skip for V1", desc: "Crates and braziers are enough. Hazards for later." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S7", title: "Audio & Music", priority: "medium",
+        desc: "Per-weapon SFX, audio escalation, and — notably — zero music design exists yet.",
+        questions: [
+          {
+            id: "Q41", text: "Should there be background music? What style?",
+            options: [
+              { label: "Yes, adaptive", desc: "Music intensifies as time/enemy count increases. Dynamic layers." },
+              { label: "Yes, static tracks", desc: "Looping medieval/alchemical tracks. Simpler implementation." },
+              { label: "Ambient only", desc: "Environmental sounds, wind, crackling. No traditional music." },
+              { label: "No audio focus yet", desc: "SFX first. Music is a later phase." },
+            ]
+          },
+          {
+            id: "Q42", text: "Should kill sounds vary by enemy type?",
+            options: [
+              { label: "Yes, per type", desc: "Husks squelch, Ironclads clang, Wisps pop. More immersive." },
+              { label: "Same variants for all", desc: "3-4 random kill sounds regardless of type. Simpler." },
+              { label: "By size/HP", desc: "Small enemies pop, big enemies boom. Based on stats, not type." },
+            ]
+          },
+          {
+            id: "Q43", text: "Should elements change weapon fire sounds?",
+            options: [
+              { label: "Yes, layered", desc: "Fire element adds crackle layer to any weapon sound. Rich but complex." },
+              { label: "Subtle pitch/filter", desc: "Fire = warmer tone, Lightning = sharper. Quick implementation." },
+              { label: "No change", desc: "Elements are visual only. Keep audio simple." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S8", title: "End-of-Run Stats & VFX", priority: "low",
+        desc: "Post-run feedback, VFX budget system, and visual clarity rules. Phases A4 and A5.",
+        questions: [
+          {
+            id: "Q44", text: "Should runs have a history / best-run leaderboard?",
+            options: [
+              { label: "Yes, local leaderboard", desc: "Top 10 runs per character. Stored locally." },
+              { label: "Last run only", desc: "Only see stats for the most recent run." },
+              { label: "Yes, with export", desc: "Leaderboard + ability to screenshot/share stats." },
+            ]
+          },
+          {
+            id: "Q45", text: "How should element contribution appear in stats?",
+            options: [
+              { label: "Show element bonus separately", desc: "'Fire element contributed: +25% fire rate, burn DoT: 842 damage.'" },
+              { label: "Baked into weapon stats", desc: "Element bonus is invisible in stats. Just shows total weapon DPS." },
+              { label: "Element vs no-element comparison", desc: "'Your DPS with Fire: 45/s. Without: 28/s. Fire value: +60%.' Satisfying but complex." },
+            ]
+          },
+          {
+            id: "Q46", text: "VFX budget of 150 emitters — is this based on testing?",
+            options: [
+              { label: "Sounds right, start there", desc: "150 is a reasonable starting point. Tune from playtesting." },
+              { label: "Too conservative", desc: "Modern hardware handles more. Start at 250, reduce if needed." },
+              { label: "Profile first", desc: "Don't set a number. Implement, test on target hardware, then set budget." },
+            ]
+          },
+          {
+            id: "Q47", text: "Should transmutation have a flashy visual effect?",
+            options: [
+              { label: "Yes, big moment", desc: "Pause briefly, flash, particle burst, weapon icon changes. Power spike celebration." },
+              { label: "Subtle glow + sound", desc: "Quick golden shimmer + chime. Noticeable but not disruptive." },
+              { label: "UI notification only", desc: "Toast message: 'Bayonet Rush transmuted into Reaper's Bayonet.' No gameplay interruption." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S9", title: "Roadmap & Priorities", priority: "medium",
+        desc: "Multiple planned phases with unclear ordering. What gets built next matters.",
+        questions: [
+          {
+            id: "Q48", text: "Which should come first — Upgrade Rework or Elemental Affinities (R3)?",
+            options: [
+              { label: "Upgrade Rework first", desc: "Passives need to exist before elements can modify them. Unblocks everything." },
+              { label: "Elements first", desc: "Elements are mostly independent of passives. Add excitement to current weapon-only runs." },
+              { label: "Parallel", desc: "Design both simultaneously, implement in stages." },
+            ]
+          },
+          {
+            id: "Q49", text: "Should Arena (A3c) come before or after Bosses (A3d)?",
+            options: [
+              { label: "Arena first", desc: "Crates and braziers make the space interesting before adding bosses." },
+              { label: "Bosses first", desc: "Boss encounters are more impactful. Arena is cosmetic by comparison." },
+              { label: "Together", desc: "Build both in the same phase. Bosses need an interesting arena to fight in." },
+            ]
+          },
+          {
+            id: "Q50", text: "What's the #1 priority right now for the game to feel fun?",
+            options: [
+              { label: "Upgrade rework", desc: "The build loop IS the game. Fix that first." },
+              { label: "More enemy variety", desc: "Fighting the same enemy for 15 minutes is the biggest gap." },
+              { label: "Audio/VFX polish", desc: "The game needs juice. Sounds and effects make everything feel better." },
+              { label: "Boss encounters", desc: "Milestone moments give the run structure and excitement." },
+            ]
+          },
+        ]
+      },
+    ];
+
+    let answers = {};
+    let totalQuestions = 0;
+
+    function init() {
+      SECTIONS.forEach(s => { totalQuestions += s.questions.length; });
+      document.getElementById('totalCount').textContent = totalQuestions;
+
+      const saved = localStorage.getItem(SAVE_KEY);
+      if (saved) {
+        try { answers = JSON.parse(saved); } catch (e) { }
+      }
+      renderNav();
+      render();
+      updateProgress();
+    }
+
+    function renderNav() {
+      const nav = document.getElementById('navBar');
+      nav.innerHTML = '';
+      SECTIONS.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'nav-btn';
+        btn.innerHTML = s.title.split(' ').slice(0, 2).join(' ') + `<span class="nav-count">${s.questions.length}</span>`;
+        btn.onclick = () => {
+          document.getElementById('sec_' + s.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+        nav.appendChild(btn);
+      });
+    }
+
+    function render() {
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = '';
+      SECTIONS.forEach(section => {
+        const div = document.createElement('div');
+        div.className = 'section ' + section.priority;
+        div.id = 'sec_' + section.id;
+
+        let html = `<div class="section-header">`;
+        html += `<div class="section-title">${section.title}</div>`;
+        html += `<span class="section-badge badge-${section.priority}">${section.priority}</span>`;
+        html += `</div>`;
+        html += `<div class="section-desc">${section.desc}</div>`;
+
+        section.questions.forEach((q, qi) => {
+          html += `<div class="question">`;
+          html += `<div class="q-label"><span class="q-num">${q.id}</span>: ${q.text}</div>`;
+
+          if (q.options) {
+            html += `<div class="options">`;
+            q.options.forEach(opt => {
+              const sel = answers[q.id] === opt.label ? 'selected' : '';
+              const safeLabel = opt.label.replace(/'/g, "\\'");
+              html += `<button class="opt-btn ${sel}" onclick="onSelect('${q.id}', '${safeLabel}', this)">`;
+              html += `<span class="opt-label">${opt.label}</span>`;
+              if (opt.desc) html += `<span class="opt-desc">${opt.desc}</span>`;
+              html += `</button>`;
+            });
+            html += `</div>`;
+          }
+
+          const textKey = q.id + '_text';
+          const textVal = answers[textKey] || '';
+          html += `<span class="text-label">Notes / alternative ideas:</span>`;
+          html += `<textarea class="text-input" id="ta_${q.id}" placeholder="Type your thoughts here..." oninput="onText('${q.id}_text', this.value)">${textVal}</textarea>`;
+
+          html += `</div>`;
+          if (qi < section.questions.length - 1) html += `<div class="divider"></div>`;
+        });
+
+        div.innerHTML = html;
+        container.appendChild(div);
+      });
+    }
+
+    function onSelect(qid, value, btn) {
+      answers[qid] = value;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      autoSave();
+      updateProgress();
+    }
+
+    function onText(key, value) {
+      answers[key] = value;
+      autoSave();
+      updateProgress();
+    }
+
+    function updateProgress() {
+      let count = 0;
+      SECTIONS.forEach(s => {
+        s.questions.forEach(q => {
+          if ((answers[q.id] && answers[q.id].trim()) || (answers[q.id + '_text'] && answers[q.id + '_text'].trim())) {
+            count++;
+          }
+        });
+      });
+      document.getElementById('progressCount').textContent = count;
+    }
+
+    function autoSave() {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(answers));
+    }
+
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (isError ? ' error' : '');
+      setTimeout(() => t.className = 'toast', 2500);
+    }
+
+    function buildMarkdown() {
+      let md = "# Workshop V2 Answers\n\n";
+      SECTIONS.forEach(section => {
+        md += `## ${section.title}\n\n`;
+        section.questions.forEach(q => {
+          const choice = answers[q.id] || "(no selection)";
+          const notes = answers[q.id + '_text'] || "";
+          md += `**${q.id}**: ${q.text}\n`;
+          md += `> **${choice}**\n`;
+          if (notes.trim()) md += `> Notes: ${notes}\n`;
+          md += `\n`;
+        });
+      });
+      return md;
+    }
+
+    function saveLocal() {
+      autoSave();
+      const md = buildMarkdown();
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'WORKSHOP_V2_ANSWERS.md';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloaded WORKSHOP_V2_ANSWERS.md');
+    }
+
+    async function sendToDiscord() {
+      const answered = [];
+      SECTIONS.forEach(s => {
+        s.questions.forEach(q => {
+          if ((answers[q.id] && answers[q.id].trim()) || (answers[q.id + '_text'] && answers[q.id + '_text'].trim())) {
+            answered.push(q);
+          }
+        });
+      });
+
+      if (answered.length === 0) { showToast('Answer at least one question first', true); return; }
+
+      const embeds = [];
+      let currentEmbed = {
+        title: "Workshop V2 Answers",
+        color: 3447003,
+        fields: [],
+        footer: { text: `${answered.length}/${totalQuestions} answered` },
+        timestamp: new Date().toISOString()
+      };
+
+      SECTIONS.forEach(section => {
+        section.questions.forEach(q => {
+          const choice = answers[q.id];
+          const notes = answers[q.id + '_text'];
+          if ((!choice || !choice.trim()) && (!notes || !notes.trim())) return;
+
+          if (currentEmbed.fields.length >= 25) {
+            embeds.push(currentEmbed);
+            currentEmbed = { title: "Workshop V2 (cont.)", color: 3447003, fields: [] };
+          }
+
+          let val = choice ? `**${choice}**` : "(no selection)";
+          if (notes && notes.trim()) val += `\n> ${notes.substring(0, 900)}`;
+          if (val.length > 1024) val = val.substring(0, 1021) + '...';
+
+          currentEmbed.fields.push({
+            name: `${q.id}: ${q.text.substring(0, 200)}`,
+            value: val,
+            inline: false
+          });
+        });
+      });
+      embeds.push(currentEmbed);
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: "**Design Workshop V2 Responses**", embeds: embeds.slice(0, 10) })
+        });
+        if (res.ok || res.status === 204) {
+          showToast('Sent to Discord!');
+        } else {
+          showToast('Discord error: ' + res.status, true);
+        }
+      } catch (e) {
+        showToast('Network error', true);
+      }
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
