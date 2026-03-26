@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>M&P Workshop — Final Clarifications</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a12; --card: #14131e; --border: #2a2840; --gold: #d4a843;
+      --text: #e0dde8; --muted: #8884a0; --green: #2ecc71; --red: #e74c3c;
+      --blue: #3498db; --accent: #c44dff; --accent2: #ff6b9d; --accent3: #4dccff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      padding: 16px; padding-bottom: 100px;
+    }
+    h1 { color: var(--gold); font-size: 1.5rem; text-align: center; margin-bottom: 4px; font-weight: 800; }
+    .subtitle { color: var(--muted); font-size: 0.8rem; text-align: center; margin-bottom: 8px; }
+    .progress { text-align: center; color: var(--muted); font-size: 0.78rem; margin-bottom: 14px; }
+    .progress .count { color: var(--gold); font-weight: 700; }
+    .context-box {
+      background: #1a1930; border: 1px solid var(--border); border-left: 3px solid var(--accent3);
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 10px;
+      font-size: 0.78rem; color: var(--muted); line-height: 1.6;
+    }
+    .context-box strong { color: var(--accent3); }
+    .context-box .your-answer { color: var(--gold); font-weight: 600; }
+    .section {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 18px; margin-bottom: 16px;
+    }
+    .section-title { color: var(--gold); font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .section-desc { color: var(--muted); font-size: 0.78rem; margin-bottom: 14px; line-height: 1.5; }
+    .question { margin-bottom: 20px; }
+    .question:last-child { margin-bottom: 0; }
+    .q-label { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; line-height: 1.5; }
+    .q-label .q-num { color: var(--gold); font-weight: 700; }
+    .options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .opt-btn {
+      background: #1c1b2e; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; color: var(--text); font-family: inherit; font-size: 0.82rem;
+      text-align: left; cursor: pointer; transition: all 0.15s; line-height: 1.3;
+    }
+    .opt-btn:hover { border-color: var(--gold); }
+    .opt-btn.selected { background: #1f1e35; border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+    .opt-btn .opt-label { font-weight: 600; }
+    .opt-btn .opt-desc { color: var(--muted); font-size: 0.75rem; display: block; margin-top: 2px; }
+    .text-input {
+      width: 100%; background: #1c1b2e; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; color: var(--text); font-family: inherit; font-size: 0.82rem;
+      resize: vertical; min-height: 50px; outline: none; margin-top: 6px;
+    }
+    .text-input:focus { border-color: var(--gold); }
+    .text-input::placeholder { color: #555; }
+    .text-label { font-size: 0.7rem; color: var(--muted); margin-top: 6px; display: block; }
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--card);
+      border-top: 1px solid var(--border); padding: 12px 16px; display: flex; gap: 8px; z-index: 100;
+    }
+    .btn {
+      flex: 1; padding: 12px; border: none; border-radius: 8px; font-family: inherit;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn:active { opacity: 0.7; }
+    .btn-send { background: var(--green); color: #fff; }
+    .btn-save { background: var(--blue); color: #fff; }
+    .toast {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      background: var(--green); color: #fff; padding: 10px 20px; border-radius: 8px;
+      font-weight: 600; font-size: 0.85rem; z-index: 200; opacity: 0;
+      transition: opacity 0.3s; pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+    .toast.error { background: var(--red); }
+    .back-link {
+      display: block; text-align: center; color: var(--muted);
+      font-size: 0.75rem; text-decoration: none; margin-bottom: 12px;
+    }
+    .back-link:hover { color: var(--gold); }
+    @media (max-width: 600px) { body { padding: 10px; padding-bottom: 90px; } .section { padding: 14px; } }
+  </style>
+</head>
+
+<body>
+  <a href="index.html" class="back-link">axogames.dev</a>
+  <h1>Mortar & Pistol</h1>
+  <p class="subtitle">Final Clarifications — 11 Questions</p>
+  <p class="subtitle" style="font-size:0.7rem; margin-bottom:4px;">Last round. These fill in the remaining gaps from your follow-up answers.</p>
+  <div class="progress">Answered: <span class="count" id="progressCount">0</span> / <span id="totalCount">0</span></div>
+
+  <div id="questionsContainer"></div>
+
+  <div class="bottom-bar">
+    <button class="btn btn-save" onclick="saveLocal()">Save Local</button>
+    <button class="btn btn-send" onclick="sendToDiscord()">Send to Discord</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1485718166914207925/EN4xYAWpprqnR51SNyanYtWs4Jj3zbkLlY6Lj1zqySktm2UFSrVy8dIIAzMo-DFxzP8w";
+    const SAVE_KEY = "mp_workshop_final_answers";
+
+    const SECTIONS = [
+      {
+        id: "S1", title: "Void Element — Gravity Wells + Execution",
+        desc: "You said Void should be gravity wells with execution chance as meta progression. Let's nail down the specifics.",
+        questions: [
+          {
+            id: "C1",
+            context: "Your answer: <span class='your-answer'>\"Void should be gravity wells and have execution chance as a meta progression, elements and heroes should have their own section of the forge.\"</span><br><br><strong>Proposed Void rework:</strong> Void hits create micro-gravity pulls that drag nearby enemies toward the impact point. This replaces the 'reduces max HP' mechanic entirely. The execution threshold (enemies below X% HP are instant-killed) is a separate Forge upgrade, not part of the element itself.",
+            text: "How strong should Void gravity wells be?",
+            options: [
+              { label: "Subtle pull — grouping tool", desc: "Small pull radius (40px), gentle force. Enemies cluster together over time. Combos with AoE weapons." },
+              { label: "Strong pull — vortex", desc: "Larger radius (80px), strong pull. Enemies get sucked in quickly. More dramatic, might be OP with rapid fire." },
+              { label: "Burst pull — on-hit", desc: "Each Void hit creates a brief 0.3s pull (60px). Enemies snap inward then resume walking. Rhythmic crowd control." },
+            ]
+          },
+          {
+            id: "C2",
+            context: "<strong>Void's stat trade-off needs rebalancing</strong> now that the mechanic changed from 'reduce max HP' to 'gravity wells.' The old trade-off was -30% damage, -15% fire rate — very harsh because the mechanic was very strong. Gravity wells are strong CC but don't directly deal damage, so the trade-off should probably be lighter.",
+            text: "What should Void's stat modifiers be?",
+            options: [
+              { label: "Light: -10% damage, no fire rate penalty", desc: "Void is a utility element. Small damage trade for CC. Attractive to most builds." },
+              { label: "Medium: -15% damage, -10% fire rate", desc: "Moderate trade-off. You sacrifice some DPS for crowd control." },
+              { label: "Trade damage for pull strength", desc: "-20% damage, but wells are stronger. High commitment, high reward." },
+            ]
+          },
+          {
+            id: "C3",
+            context: "<strong>Execution threshold as Forge upgrade:</strong> You want 'enemies below X% HP are instantly killed' as a meta progression purchase, not an element ability. This is like Hades' 'Privileged Status' — a permanent power boost.<br><br>This would be a new Forge category. Currently The Forge only has stat enhancements. You also said elements and heroes should have their own Forge sections.",
+            text: "What should the execution threshold look like in The Forge?",
+            options: [
+              { label: "5 tiers: 2% → 10% threshold", desc: "Lv1: enemies below 2% HP die. Lv5: enemies below 10% HP die. Subtle but stacks well with burst damage." },
+              { label: "3 tiers: 5% → 15% threshold", desc: "Lv1: 5%, Lv2: 10%, Lv3: 15%. Fewer upgrades but more impactful each." },
+              { label: "Void-specific only", desc: "Execution only works when Void element is active. Makes Void uniquely powerful, not a global buff." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S2", title: "The Forge — Element & Hero Sections",
+        desc: "You want elements and heroes to have their own Forge sections, not just generic stat upgrades.",
+        questions: [
+          {
+            id: "C4",
+            context: "Currently The Forge has 7 generic stat enhancements (damage, fire rate, HP, speed, etc). You want to add element-specific and hero-specific upgrade tracks.<br><br><strong>Example Element Forge upgrades:</strong><br>• Fire: Burn duration +0.5s per level<br>• Lightning: Chain hop range +10px per level<br>• Void: Gravity well radius +5px per level<br><br><strong>Example Hero Forge upgrades:</strong><br>• Wizard: Beam width +2px per level<br>• Bombardier: Keg fuse speed -0.1s per level<br>• Assassin: Burst fire adds +1 shot at max level",
+            text: "How many Forge upgrade tiers per element and per hero?",
+            options: [
+              { label: "3 tiers each", desc: "7 elements × 3 tiers + 4 heroes × 3 tiers = 33 new upgrades. Moderate scope." },
+              { label: "5 tiers each", desc: "7 × 5 + 4 × 5 = 55 new upgrades. Lots of grind, lots of depth." },
+              { label: "1 meaningful upgrade each", desc: "Each element and hero gets ONE big unlock (not tiered). 11 total. Special abilities, not stat bumps." },
+            ]
+          },
+          {
+            id: "C5",
+            context: "With generic stats, element upgrades, hero upgrades, execution threshold, banish, and rerolls all in The Forge, the total dust sink grows significantly. The original budget was ~2,800 dust (15-20 runs).",
+            text: "How should the expanded Forge affect the grind length?",
+            options: [
+              { label: "Same pace — cheaper individual upgrades", desc: "Keep 15-20 runs to max. Each upgrade costs less since there are more of them." },
+              { label: "Longer tail — 30-40 runs", desc: "More content means more grind. Keeps players engaged longer." },
+              { label: "Prioritized unlocking", desc: "Generic stats cheap and fast (10 runs). Element/hero sections are endgame grind (20+ more runs)." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S3", title: "Shield & Armor System (Unified)",
+        desc: "You want all shields to use the same absorb mechanic regardless of visual style. Let's define the shared system.",
+        questions: [
+          {
+            id: "C6",
+            context: "Your answer: <span class='your-answer'>\"Shields should function the same across the board... both are absorb shields and function the same way but they look different and some can be bypassed entirely (actual object via shooting while it's down) and some can't but still have the increased damage done to it via armor piercing stat.\"</span><br><br><strong>So there are two visual types with the same HP bar mechanic:</strong><br>• <strong>Object Shield</strong> (Shielded Elite): Physical shield that drops during attacks. Can be bypassed by shooting during 'down' phase. Armor piercing does bonus damage to it.<br>• <strong>Overshield</strong> (some bosses, future enemies): Energy barrier that's always active. Can NOT be bypassed by timing — must be broken through. Armor piercing does bonus damage to it.",
+            text: "How much HP should shields have? Should it scale?",
+            options: [
+              { label: "Fixed per enemy type", desc: "Shielded Elite: 50 HP shield. Boss shields: 200 HP. Designer sets each one." },
+              { label: "Percentage of enemy HP", desc: "Shield = 30% of enemy's max HP. Scales automatically with enemy difficulty." },
+              { label: "Time-scaling", desc: "Shield HP = 30 + (minute × 5). Starts weak, grows with the run. Armor piercing becomes more valuable over time." },
+            ]
+          },
+          {
+            id: "C7",
+            context: "When a shield breaks, something should happen to reward the player and signal the vulnerability window.",
+            text: "What happens when any shield breaks?",
+            options: [
+              { label: "Stun + visual shatter", desc: "Enemy stunned 1s, shield explodes in particles. Clear reward for breaking through." },
+              { label: "Damage vulnerability", desc: "Enemy takes +25% damage from all sources for 3s after shield break. No stun." },
+              { label: "Both — stun + vulnerability", desc: "0.5s stun AND +25% damage for 2s. Big payoff window." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S4", title: "Passive Rework — Starting Fresh",
+        desc: "You said to totally rework passives — nothing should remain as-is unless we choose to keep it. Let's define the new passive system.",
+        questions: [
+          {
+            id: "C8",
+            context: "Your answer: <span class='your-answer'>\"I meant we need to TOTALLY rework everything passive related, no passive in the game should exist as it currently does unless we deem necessary.\"</span><br><br>Currently there are 8 passives, each mapping to one stat. You want every passive to affect every weapon, and passives to feel distinct from each other. Here are some directions:<br><br><strong>Option A — Themed passive bundles:</strong> Fewer passives (4-5), each affects multiple stats. E.g., 'War Cadence: +damage, +fire rate, +knockback' vs 'Alchemist's Eye: +area, +duration, +crit chance.'<br><br><strong>Option B — Weapon-aware passives:</strong> Each passive adapts its effect based on weapon type. 'Combat Training Lv1' gives: Bolt Rifle → wider beam, Keg → faster fuse, Flask → more shrapnel. One passive, different effects.<br><br><strong>Option C — Scrap the category, use traits:</strong> Replace 'passives' with small 'traits' (minor buffs from level-ups) and 'artifacts' (major passives from chests/bosses). Two tiers instead of one.",
+            text: "Which direction for the passive rework?",
+            options: [
+              { label: "A: Themed bundles", desc: "4-5 passives, each affects 2-3 stats. Simple, clear, every passive matters to every build." },
+              { label: "B: Weapon-aware passives", desc: "Passives adapt per weapon. Most creative, most design work. Each passive is interesting for every hero." },
+              { label: "C: Traits + Artifacts", desc: "Minor traits in level-up pool, major artifacts from bosses/chests. Two-tier system. Artifacts are exciting drops." },
+            ]
+          },
+          {
+            id: "C9",
+            context: "Regardless of which direction: how many passive slots should there be? Currently 6. With reworked passives that are each more impactful, fewer slots might be better.",
+            text: "How many passive slots in the new system?",
+            options: [
+              { label: "Keep 6", desc: "Standard VS model. Lots of room, gradual build." },
+              { label: "Reduce to 4", desc: "Each slot matters more. Forces harder choices. Pairs well with stronger passives." },
+              { label: "Reduce to 3", desc: "Very tight. Every passive is a major build decision. Works best with Option C (traits are separate)." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S5", title: "Weapon Pool & Unlocking Rework",
+        desc: "You don't want all 6 pool weapons unlocked at once, and said pool weapons shouldn't be the only other weapons.",
+        questions: [
+          {
+            id: "C10",
+            context: "Your answer: <span class='your-answer'>\"We need to rework the unlocked weapons though as these should be something interesting on top of the existing pool weapons since the weapons unlocked by this achievement shouldn't be the only other weapons.\"</span><br><br>This implies you want MORE weapons beyond the current 10 (4 character + 6 pool). The 6 pool weapons could be available from the start (or early unlock), with additional weapons earned through achievements/progression.<br><br><strong>Current pool weapons:</strong> Bayonet Rush, Mortar Burst, Arc Discharge, Ember Shells, Blight Flask, Seeker Rounds.",
+            text: "Should the 6 existing pool weapons be available from the start or unlocked?",
+            options: [
+              { label: "Available from run 1", desc: "All 6 pool weapons are in the level-up pool immediately. Achievements unlock NEW weapons beyond these." },
+              { label: "Unlock 2 per hero played", desc: "Play Wizard → unlock 2 pool weapons. Play Alchemist → 2 more. All 4 heroes = all 6 pool weapons." },
+              { label: "Unlock via Forge purchase", desc: "Buy each pool weapon individually in The Forge (50-100 dust each). Player chooses order." },
+            ]
+          },
+          {
+            id: "C11",
+            context: "If pool weapons are the baseline and achievements unlock NEW weapons, what kind of weapons are those? They could be:<br><br>• <strong>Hero variant weapons:</strong> Alternate versions of character weapons (e.g., win as Wizard → unlock 'Arcane Shotgun' for all heroes — a Bolt Rifle variant that fires wide).<br>• <strong>Hybrid weapons:</strong> Weapons that combine two archetypes (e.g., a homing AoE, or a chain+DOT).<br>• <strong>Boss weapons:</strong> Unique drops from bosses (Storm Weaver drops a lightning weapon, Iron Warden drops a shield-bash weapon).",
+            text: "What kind of weapons should achievements unlock?",
+            options: [
+              { label: "Hero variants", desc: "Win with each hero to unlock their weapon type as a pool weapon for all heroes. 4 new weapons." },
+              { label: "Hybrid weapons", desc: "Unique combos not in any existing archetype. Earned through hard achievements. 3-4 per phase." },
+              { label: "Boss weapons", desc: "Each boss has a signature weapon drop. Beat boss → weapon enters pool permanently. Tied to progression." },
+              { label: "Mix of all three", desc: "Hero variants + hybrids + boss drops. Different sources for different weapon tiers." },
+            ]
+          },
+        ]
+      },
+    ];
+
+    let answers = {};
+    let totalQuestions = 0;
+
+    function init() {
+      SECTIONS.forEach(s => { totalQuestions += s.questions.length; });
+      document.getElementById('totalCount').textContent = totalQuestions;
+      const saved = localStorage.getItem(SAVE_KEY);
+      if (saved) { try { answers = JSON.parse(saved); } catch (e) { } }
+      render(); updateProgress();
+    }
+
+    function render() {
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = '';
+      SECTIONS.forEach(section => {
+        const div = document.createElement('div');
+        div.className = 'section';
+        let html = `<div class="section-title">${section.title}</div>`;
+        html += `<div class="section-desc">${section.desc}</div>`;
+        section.questions.forEach((q, qi) => {
+          html += `<div class="question">`;
+          if (q.context) html += `<div class="context-box">${q.context}</div>`;
+          html += `<div class="q-label"><span class="q-num">${q.id}</span>: ${q.text}</div>`;
+          if (q.options) {
+            html += `<div class="options">`;
+            q.options.forEach(opt => {
+              const sel = answers[q.id] === opt.label ? 'selected' : '';
+              const safeLabel = opt.label.replace(/'/g, "\\'");
+              html += `<button class="opt-btn ${sel}" onclick="onSelect('${q.id}', '${safeLabel}', this)">`;
+              html += `<span class="opt-label">${opt.label}</span>`;
+              if (opt.desc) html += `<span class="opt-desc">${opt.desc}</span>`;
+              html += `</button>`;
+            });
+            html += `</div>`;
+          }
+          const textKey = q.id + '_text';
+          const textVal = answers[textKey] || '';
+          html += `<span class="text-label">Notes / alternative ideas:</span>`;
+          html += `<textarea class="text-input" id="ta_${q.id}" placeholder="Type your thoughts here..." oninput="onText('${q.id}_text', this.value)">${textVal}</textarea>`;
+          html += `</div>`;
+          if (qi < section.questions.length - 1) html += `<div class="divider"></div>`;
+        });
+        div.innerHTML = html;
+        container.appendChild(div);
+      });
+    }
+
+    function onSelect(qid, value, btn) {
+      answers[qid] = value;
+      btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      autoSave(); updateProgress();
+    }
+
+    function onText(key, value) { answers[key] = value; autoSave(); updateProgress(); }
+
+    function updateProgress() {
+      let count = 0;
+      SECTIONS.forEach(s => {
+        s.questions.forEach(q => {
+          if ((answers[q.id] && answers[q.id].trim()) || (answers[q.id + '_text'] && answers[q.id + '_text'].trim())) count++;
+        });
+      });
+      document.getElementById('progressCount').textContent = count;
+    }
+
+    function autoSave() { localStorage.setItem(SAVE_KEY, JSON.stringify(answers)); }
+
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (isError ? ' error' : '');
+      setTimeout(() => t.className = 'toast', 2500);
+    }
+
+    function buildMarkdown() {
+      let md = "# Final Clarification Answers\n\n";
+      SECTIONS.forEach(section => {
+        md += `## ${section.title}\n\n`;
+        section.questions.forEach(q => {
+          const choice = answers[q.id] || "(no selection)";
+          const notes = answers[q.id + '_text'] || "";
+          md += `**${q.id}**: ${q.text}\n`;
+          md += `> **${choice}**\n`;
+          if (notes.trim()) md += `> Notes: ${notes}\n`;
+          md += `\n`;
+        });
+      });
+      return md;
+    }
+
+    function saveLocal() {
+      autoSave();
+      const md = buildMarkdown();
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'WORKSHOP_FINAL_ANSWERS.md'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloaded WORKSHOP_FINAL_ANSWERS.md');
+    }
+
+    async function sendToDiscord() {
+      const answered = [];
+      SECTIONS.forEach(s => {
+        s.questions.forEach(q => {
+          if ((answers[q.id] && answers[q.id].trim()) || (answers[q.id + '_text'] && answers[q.id + '_text'].trim())) answered.push(q);
+        });
+      });
+      if (answered.length === 0) { showToast('Answer at least one question first', true); return; }
+
+      const embeds = [];
+      let cur = { title: "Final Clarification Answers", color: 13849600, fields: [], footer: { text: `${answered.length}/${totalQuestions} answered` }, timestamp: new Date().toISOString() };
+      SECTIONS.forEach(section => {
+        section.questions.forEach(q => {
+          const choice = answers[q.id]; const notes = answers[q.id + '_text'];
+          if ((!choice || !choice.trim()) && (!notes || !notes.trim())) return;
+          if (cur.fields.length >= 25) { embeds.push(cur); cur = { title: "Final (cont.)", color: 13849600, fields: [] }; }
+          let val = choice ? `**${choice}**` : "(no selection)";
+          if (notes && notes.trim()) val += `\n> ${notes.substring(0, 900)}`;
+          if (val.length > 1024) val = val.substring(0, 1021) + '...';
+          cur.fields.push({ name: `${q.id}: ${q.text.substring(0, 200)}`, value: val, inline: false });
+        });
+      });
+      embeds.push(cur);
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: "**Final Clarification Responses**", embeds: embeds.slice(0, 10) })
+        });
+        if (res.ok || res.status === 204) showToast('Sent to Discord!');
+        else showToast('Discord error: ' + res.status, true);
+      } catch (e) { showToast('Network error', true); }
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
