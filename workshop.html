@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>M&P Workshop — Final Round 3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a12;
+      --card: #14131e;
+      --border: #2a2840;
+      --gold: #d4a843;
+      --text: #e0dde8;
+      --muted: #8884a0;
+      --green: #2ecc71;
+      --red: #e74c3c;
+      --blue: #3498db;
+      --accent: #c44dff;
+      --accent2: #ff6b9d;
+      --accent3: #4dccff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      padding-bottom: 100px;
+    }
+
+    h1 {
+      color: var(--gold);
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 4px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 14px;
+    }
+
+    .progress .count {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .context-box {
+      background: #1a1930;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .context-box strong {
+      color: var(--accent3);
+    }
+
+    .context-box .your-answer {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      color: var(--gold);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    .question:last-child {
+      margin-bottom: 0;
+    }
+
+    .q-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .q-label .q-num {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .opt-btn {
+      background: #1c1b2e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.3;
+    }
+
+    .opt-btn:hover {
+      border-color: var(--gold);
+    }
+
+    .opt-btn.selected {
+      background: #1f1e35;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+
+    .opt-btn .opt-label {
+      font-weight: 600;
+    }
+
+    .opt-btn .opt-desc {
+      color: var(--muted);
+      font-size: 0.75rem;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .text-input {
+      width: 100%;
+      background: #1c1b2e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+      resize: vertical;
+      min-height: 50px;
+      outline: none;
+      margin-top: 6px;
+    }
+
+    .text-input:focus {
+      border-color: var(--gold);
+    }
+
+    .text-input::placeholder {
+      color: #555;
+    }
+
+    .text-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 6px;
+      display: block;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn:active {
+      opacity: 0.7;
+    }
+
+    .btn-send {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-save {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .toast.error {
+      background: var(--red);
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+
+    .back-link:hover {
+      color: var(--gold);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+        padding-bottom: 90px;
+      }
+
+      .section {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="index.html" class="back-link">axogames.dev</a>
+  <h1>Mortar & Pistol</h1>
+  <p class="subtitle">Final Round 3 — Nailing It Down</p>
+  <p class="subtitle" style="font-size:0.7rem; margin-bottom:4px;">Specifying the 4 new weapons, resolving pool availability, and locking in Void execute + trait behavior.</p>
+  <div class="progress">Answered: <span class="count" id="progressCount">0</span> / <span id="totalCount">0</span></div>
+
+  <div id="questionsContainer"></div>
+
+  <div class="bottom-bar">
+    <button class="btn btn-save" onclick="saveLocal()">Save Local</button>
+    <button class="btn btn-send" onclick="sendToDiscord()">Send to Discord</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1485718166914207925/EN4xYAWpprqnR51SNyanYtWs4Jj3zbkLlY6Lj1zqySktm2UFSrVy8dIIAzMo-DFxzP8w";
+    const SAVE_KEY = "mp_workshop_final3_answers";
+
+    const SECTIONS = [
+      {
+        id: "S1", title: "Pool Weapon Specs — Your 4 Picks",
+        desc: "You chose: Gravity Lash (push, not pull), Phantom Sentry, Sawblade Launcher (arcing throw), Magma Geyser (follows mouse). Let's define each one properly, including its transmutation since you want them designed together.",
+        questions: [
+          {
+            id: "E1",
+            context: "You picked <span class='your-answer'>Gravity Lash</span> but said <span class='your-answer'>\"push enemies away tho\"</span> — the original proposal pulled enemies toward you. Pushing reverses it into a crowd-control spacer. This changes the identity significantly: it's now a defensive knockback whip instead of an offensive grouping tool.<br><br><strong>Proposed rework:</strong> Crack a force whip in a wide arc. Hit enemies are knocked back 80-150px and take damage. Weapon type: WHIP (new). Scales with area (arc width) and damage.",
+            text: "How should Gravity Lash (push version) work?",
+            options: [
+              { label: "Wide arc knockback", desc: "120° cone in aim direction. Enemies pushed back 100px. Short range (120px). 1.0s cooldown. Defensive spacing tool." },
+              { label: "360° ring pulse", desc: "Pushes all enemies away from you in a ring. 80px range, 80px push distance. Like a force nova. 1.5s cooldown." },
+              { label: "Targeted lash", desc: "Whip hits nearest enemy in 150px range, then knockback chains to 2-3 nearby enemies. Narrower but deeper CC." },
+            ]
+          },
+          {
+            id: "E2",
+            context: "You said <span class='your-answer'>Sawblade Launcher \"chucks in air and falls downward\"</span> — this is an arcing projectile (like a thrown axe), not the rolling-along-the-ground version. Think: toss a spinning blade upward in a mortar arc, it crashes down at the target dealing damage in an area.<br><br><strong>Proposed rework:</strong> Weapon type: ARC (new). Throw a spinning blade in a ballistic arc toward nearest enemy. Impact deals damage in a small AoE (50px). The blade lodges in the ground for 1.5s, spinning and damaging enemies that walk over it. Scales with area (impact zone) and projectile speed (arc range).",
+            text: "How should Sawblade Launcher (arcing version) work?",
+            options: [
+              { label: "Arc + linger on ground", desc: "Thrown in an arc, lands and spins on the ground for 1.5s dealing tick damage. AoE on impact + persistent zone. Like a mini-turret." },
+              { label: "Arc + bounce on landing", desc: "Thrown in an arc, bounces 2-3 times on landing covering more ground. Each bounce deals damage in a small area. No linger." },
+              { label: "Arc + return boomerang", desc: "Thrown in an arc to target, then arcs back to you. Hits enemies on both the outward and return trip. Like a boomerang sawblade." },
+            ]
+          },
+          {
+            id: "E3",
+            context: "You said <span class='your-answer'>Magma Geyser \"follows mouse\"</span> — this makes it an aim-controlled weapon, which is unique in M&P (everything else auto-targets). This could be powerful but might conflict with movement controls.<br><br><strong>Considerations:</strong> M&P is a keyboard-movement game. Adding a mouse-aimed weapon means the player uses WASD to move and mouse to aim the geyser simultaneously. This is more engaging but higher skill floor.",
+            text: "How should Magma Geyser (mouse-aimed) work?",
+            options: [
+              { label: "Geyser at mouse cursor", desc: "Eruption spawns at mouse position every 1.5s. 0.8s delay before eruption (shows warning circle). Direct control, high skill expression." },
+              { label: "Geyser trails mouse slowly", desc: "A lava zone slowly drifts toward where your mouse is pointing. Persistent trail of fire. Less precise but always active. Like dragging a flame." },
+              { label: "On mouse click only", desc: "Click to place a geyser marker, eruption 1s later. Doesn't fire automatically — you choose when and where. Most tactical, least 'bullet heaven' feeling." },
+            ]
+          },
+          {
+            id: "E4",
+            context: "<span class='your-answer'>Phantom Sentry</span> — a stationary turret that auto-fires. You didn't add any custom notes for this one, so the original spec stands: places a temporary gun that shoots nearby enemies for ~8s.<br><br><strong>Key spec:</strong> Weapon type: TURRET (new). Places a sentry at player position. Fires at nearest enemy within 200px range, 3 shots/sec, each shot deals weapon damage. Lasts 8s. Sentry inherits your damage/fire rate multipliers. Scales with projectile count (multi-barrel) and fire rate.",
+            text: "How many sentries can exist at once at max level?",
+            options: [
+              { label: "1 at a time (stronger)", desc: "Only 1 sentry ever. Levels boost damage and fire rate heavily. Repositions by placing a new one (old vanishes). Simpler to balance." },
+              { label: "2 at max (Lv4+)", desc: "1 sentry at Lv1-3, 2 at Lv4-5. Two turrets covering different angles. Moderate complexity." },
+              { label: "Up to 3 (one per few levels)", desc: "1 at Lv1, 2 at Lv3, 3 at Lv5. Multiple turrets creating a kill zone. High visual density, harder to balance." },
+            ]
+          },
+          {
+            id: "E5",
+            context: "You want transmutations <span class='your-answer'>designed together</span> with the base weapons. Each pool weapon transmutes with a specific artifact. Here's a quick brainstorm for each:<br><br>• <strong>Gravity Lash → ???</strong>: Push becomes a vortex wall? Implosion on knockback kill?<br>• <strong>Sawblade Launcher → ???</strong>: Blade splits into 3 on impact? Becomes a giant persistent sawblade?<br>• <strong>Magma Geyser → ???</strong>: Eruption leaves permanent lava pools? Chains between cursor positions?<br>• <strong>Phantom Sentry → ???</strong>: Twin sentries with linking beam? Orbiting mobile sentry?<br><br>Plus the 2 kept weapons need transmutations too:<br>• <strong>Arc Discharge → Storm Conduit</strong> (already designed)<br>• <strong>Seeker Rounds → Bullet Storm</strong> (already designed)",
+            text: "Describe your vision for the 4 new transmutations (use notes below — no multiple choice needed for creative design).",
+            options: [
+              { label: "I'll describe in notes", desc: "Use the text box below to describe your transmutation ideas for each of the 4 new weapons." },
+              { label: "Let Claude design them", desc: "I'll come up with transmutations based on each weapon's identity and present them for review." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S2", title: "Pool Weapon Availability — Resolving the Conflict",
+        desc: "You selected '2 free, 4 unlock progressively' but then noted you'd like MORE than 2 free, citing VS as having lots of weapons available from the start. Let's resolve this.",
+        questions: [
+          {
+            id: "E6",
+            context: "Your answer: <span class='your-answer'>\"2 free, 4 unlock progressively\"</span><br>Your note: <span class='your-answer'>\"I'd like to have more than 2 weapons unlocked at base, correct me if I'm wrong but VS and other games have lots of weapons you can get off rip\"</span><br><br><strong>You're right about VS:</strong> Vampire Survivors starts you with 6+ weapons available in the level-up pool from run 1. The unlock progression is for characters and later/weirder weapons. The base weapons are always there.<br><br><strong>Current M&P situation:</strong> You have 6 pool weapons + 1 character weapon per hero. If all 6 pool weapons are free, a new player's level-up pool has ~7 weapons to choose from — that's comparable to VS's baseline. If only 2 are free, early runs feel limited (character weapon + 2 pool weapons = only 3 options).",
+            text: "How many of the 6 pool weapons should be free from run 1?",
+            options: [
+              { label: "All 6 free", desc: "Like VS — all pool weapons are baseline content. Achievement weapons (hero variants, boss drops, hybrids) are the unlock content. Richest early experience." },
+              { label: "4 free, 2 unlock", desc: "Generous baseline. 4 pool + character weapon = 5 options from run 1. The 2 locked ones are more exotic/complex." },
+              { label: "3 free, 3 unlock", desc: "Balanced. Character weapon + 3 pool = 4 options. Enough variety to start, clear progression curve." },
+            ]
+          },
+          {
+            id: "E7",
+            context: "For pool weapons that ARE locked — what unlocks them? This applies to however many you lock behind progression.",
+            text: "What should unlock locked pool weapons?",
+            options: [
+              { label: "Play as specific heroes", desc: "E.g., 'Play 3 runs as Bombardier to unlock Sawblade Launcher.' Ties weapons to hero exploration." },
+              { label: "Total kill / run milestones", desc: "E.g., 'Kill 1000 enemies total' or 'Survive 10 minutes 5 times.' General progression." },
+              { label: "Forge purchase (cheap)", desc: "Buy directly with dust for 50-100 each. Player picks their unlock order. No specific challenge required." },
+              { label: "Mix of the above", desc: "Each locked weapon has a unique unlock condition — one hero-based, one milestone, one Forge, etc." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S3", title: "Void Execute — Chain Reaction Limits",
+        desc: "You chose 'guaranteed execute on vortex pull' for Void's execution boost. This creates insane chain reaction potential — let's make sure it's intentionally insane and not accidentally broken.",
+        questions: [
+          {
+            id: "E8",
+            context: "Your answers combined:<br>• Execution: <span class='your-answer'>5% chance below 15% HP, works on ALL enemies</span><br>• Void boost: <span class='your-answer'>Guaranteed execute on vortex pull</span><br>• Vortex: <span class='your-answer'>Pulling enemies in, dealing 15% of dead enemy's max HP, radius scales with tier</span><br><br><strong>The chain reaction:</strong> Kill enemy → vortex spawns → pulls nearby enemies inward → pulled enemies below 15% HP are auto-executed → THOSE deaths spawn more vortices → repeat.<br><br>In a dense horde, this cascades. An elite kill (120px pull) could pull 10+ enemies, execute the wounded ones, which each spawn their own vortices. This is either an amazing screen-clearing moment or an infinite loop bug depending on tuning.",
+            text: "Should vortex-triggered executions spawn NEW vortices (recursive chain), or does the chain stop?",
+            options: [
+              { label: "Full recursion (1 generation)", desc: "Executed enemies DO spawn vortices, but those vortices can't trigger more executions. One cascade layer. Satisfying chain without infinite loop." },
+              { label: "Full recursion (unlimited)", desc: "Every execution spawns a vortex, every vortex can execute, forever. Maximum power fantasy. Risk of lag in extreme hordes." },
+              { label: "No recursion", desc: "Only natural kills (damage) spawn vortices. Execution kills don't spawn vortices. Clean but weaker." },
+            ]
+          },
+          {
+            id: "E9",
+            context: "The <span class='your-answer'>guaranteed execute on vortex pull</span> only triggers on enemies below 15% HP. But in a dense fight with chain reactions, many enemies will be at low HP from vortex damage. Combined with the 5% passive proc on every hit, Void becomes a guaranteed horde-clearer.",
+            text: "Should there be a cooldown or cap on executions per vortex?",
+            options: [
+              { label: "No cap — let it rip", desc: "If 15 enemies are below 15% HP in the vortex, all 15 die. Full power fantasy. You chose Void for a reason." },
+              { label: "Max 3 executions per vortex", desc: "Each vortex can auto-execute up to 3 enemies. Remaining low-HP enemies just take the vortex damage normally." },
+              { label: "Max 5 executions per vortex", desc: "Generous cap. Enough for satisfying chains, prevents theoretical framerate issues in extreme scenarios." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "S4", title: "Weapon-Aware Traits — What 'All' Means",
+        desc: "You said ALL traits should be weapon-aware. This is the most complex option — let's define what that actually looks like.",
+        questions: [
+          {
+            id: "E10",
+            context: "Your answer: <span class='your-answer'>All weapon-aware</span><br><br><strong>What this means in practice:</strong> Instead of a trait saying '+5% damage', it would say something like 'Focused Energy: Beam/Chain weapons get +8% damage, AoE/Mine weapons get +6% blast radius, Turret weapons get +10% fire rate.' Every trait reads your loadout and adjusts its bonus.<br><br>This is very cool but means:<br>• Every trait needs 4-6 weapon-type variants defined<br>• The player needs to understand what their specific bonus is<br>• Trait descriptions become longer/more complex in the UI",
+            text: "How should weapon-aware traits display their bonuses?",
+            options: [
+              { label: "Show only YOUR bonus", desc: "Trait says 'Focused Energy: +8% damage' because you have a beam weapon. Hides the other variants. Clean UI, less information." },
+              { label: "Show all variants", desc: "Trait lists all weapon-type bonuses. Player sees the full picture. More information but cluttered for 4+ weapons." },
+              { label: "Primary + hint", desc: "Shows your best matching bonus prominently, with a small 'also affects: AoE, Turret' note. Balance of info and clarity." },
+            ]
+          },
+          {
+            id: "E11",
+            context: "With all traits being weapon-aware, the pool needs specific traits designed. Rather than designing all 20+ traits now, let's define the <strong>categories</strong> so we know the spread.",
+            text: "What trait categories should exist?",
+            options: [
+              { label: "Offense / Defense / Utility", desc: "3 broad buckets. Offense: damage, crit, fire rate variants. Defense: HP, regen, resistance. Utility: speed, pickup, cooldown. ~6-8 traits each." },
+              { label: "Per-stat categories", desc: "One trait per stat (Damage, Fire Rate, AoE, Pierce, Speed, Crit, HP, Regen, Luck, Pickup Range). Each has weapon-aware variants. 10-12 traits total." },
+              { label: "Themed sets", desc: "Groups like 'Gunsmith' (weapon traits), 'Alchemist' (element traits), 'Survivor' (defense traits). Small sets that synergize. More flavor." },
+            ]
+          },
+          {
+            id: "E12",
+            context: "Final question — since traits are unlimited (no slot cap) and weapon-aware, there's a risk of the level-up pool being flooded with traits that all feel similar. How do we keep trait choices interesting past level 10?",
+            text: "How should traits scale to stay interesting late-run?",
+            options: [
+              { label: "Tiered traits", desc: "Tier 1 traits (+3-5%) available early. Tier 2 (+8-10%) replace them after Lv8. Tier 3 (+15%+) after Lv15. Old tiers disappear. Always meaningful choices." },
+              { label: "Stacking bonuses", desc: "Same traits appear again — taking 'Focused Energy' twice gives +16% instead of +8%. No tier system, just keep stacking. Simple." },
+              { label: "Diminishing returns", desc: "First copy of a trait gives full value. Second gives 60%. Third gives 30%. Incentivizes variety over stacking one stat." },
+            ]
+          },
+        ]
+      },
+    ];
+
+    let answers = {};
+    let totalQuestions = 0;
+
+    function init() {
+      SECTIONS.forEach(s => { totalQuestions += s.questions.length; });
+      document.getElementById('totalCount').textContent = totalQuestions;
+      const saved = localStorage.getItem(SAVE_KEY);
+      if (saved) { try { answers = JSON.parse(saved); } catch (e) { } }
+      render(); updateProgress();
+    }
+
+    function render() {
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = '';
+      SECTIONS.forEach(section => {
+        const div = document.createElement('div');
+        div.className = 'section';
+        let html = `<div class="section-title">${section.title}</div>`;
+        html += `<div class="section-desc">${section.desc}</div>`;
+        section.questions.forEach((q, qi) => {
+          html += `<div class="question">`;
+          if (q.context) html += `<div class="context-box">${q.context}</div>`;
+          html += `<div class="q-label"><span class="q-num">${q.id}</span>: ${q.text}</div>`;
+          if (q.options) {
+            html += `<div class="options">`;
+            q.options.forEach(opt => {
+              const sel = answers[q.id] === opt.label ? 'selected' : '';
+              const safeLabel = opt.label.replace(/'/g, "\\'");
+              html += `<button class="opt-btn ${sel}" onclick="onSelect('${q.id}', '${safeLabel}', this)">`;
+              html += `<span class="opt-label">${opt.label}</span>`;
+              if (opt.desc) html += `<span class="opt-desc">${opt.desc}</span>`;
+              html += `</button>`;
+            });
+            html += `</div>`;
+          }
+          const textKey = q.id + '_text';
+          const textVal = answers[textKey] || '';
+          html += `<span class="text-label">Notes / alternative ideas:</span>`;
+          html += `<textarea class="text-input" id="ta_${q.id}" placeholder="Type your thoughts here..." oninput="onText('${q.id}_text', this.value)">${textVal}</textarea>`;
+          html += `</div>`;
+          if (qi < section.questions.length - 1) html += `<div class="divider"></div>`;
+        });
+        div.innerHTML = html;
+        container.appendChild(div);
+      });
+    }
+
+    function onSelect(qid, value, btn) {
+      answers[qid] = value;
+      btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      autoSave(); updateProgress();
+    }
+
+    function onText(key, value) { answers[key] = value; autoSave(); updateProgress(); }
+
+    function updateProgress() {
+      let count = 0;
+      SECTIONS.forEach(s => {
+        s.questions.forEach(q => {
+          if ((answers[q.id] && answers[q.id].trim()) || (answers[q.id + '_text'] && answers[q.id + '_text'].trim())) count++;
+        });
+      });
+      document.getElementById('progressCount').textContent = count;
+    }
+
+    function autoSave() { localStorage.setItem(SAVE_KEY, JSON.stringify(answers)); }
+
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (isError ? ' error' : '');
+      setTimeout(() => t.className = 'toast', 2500);
+    }
+
+    function buildMarkdown() {
+      let md = "# Final Round 3 Answers\n\n";
+      SECTIONS.forEach(section => {
+        md += `## ${section.title}\n\n`;
+        section.questions.forEach(q => {
+          const choice = answers[q.id] || "(no selection)";
+          const notes = answers[q.id + '_text'] || "";
+          md += `**${q.id}**: ${q.text}\n`;
+          md += `> **${choice}**\n`;
+          if (notes.trim()) md += `> Notes: ${notes}\n`;
+          md += `\n`;
+        });
+      });
+      return md;
+    }
+
+    function saveLocal() {
+      autoSave();
+      const md = buildMarkdown();
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'WORKSHOP_FINAL3_ANSWERS.md'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloaded WORKSHOP_FINAL3_ANSWERS.md');
+    }
+
+    async function sendToDiscord() {
+      const answered = [];
+      SECTIONS.forEach(s => {
+        s.questions.forEach(q => {
+          if ((answers[q.id] && answers[q.id].trim()) || (answers[q.id + '_text'] && answers[q.id + '_text'].trim())) answered.push(q);
+        });
+      });
+      if (answered.length === 0) { showToast('Answer at least one question first', true); return; }
+
+      const embeds = [];
+      let cur = { title: "Final Round 3 Answers", color: 16750848, fields: [], footer: { text: `${answered.length}/${totalQuestions} answered` }, timestamp: new Date().toISOString() };
+      SECTIONS.forEach(section => {
+        section.questions.forEach(q => {
+          const choice = answers[q.id]; const notes = answers[q.id + '_text'];
+          if ((!choice || !choice.trim()) && (!notes || !notes.trim())) return;
+          if (cur.fields.length >= 25) { embeds.push(cur); cur = { title: "Final R3 (cont.)", color: 16750848, fields: [] }; }
+          let val = choice ? `**${choice}**` : "(no selection)";
+          if (notes && notes.trim()) val += `\n> ${notes.substring(0, 900)}`;
+          if (val.length > 1024) val = val.substring(0, 1021) + '...';
+          cur.fields.push({ name: `${q.id}: ${q.text.substring(0, 200)}`, value: val, inline: false });
+        });
+      });
+      embeds.push(cur);
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: "**Final Round 3 Responses**", embeds: embeds.slice(0, 10) })
+        });
+        if (res.ok || res.status === 204) showToast('Sent to Discord!');
+        else showToast('Discord error: ' + res.status, true);
+      } catch (e) { showToast('Network error', true); }
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
